@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quintas da Mata · Dashboard de Análise</title>
+<style>
+:root{
+  --forest:#2d5a1b;--forest-d:#1e3d12;--forest-l:#4a8a2e;--forest-xl:#e8f2e1;
+  --gold:#8a6a1a;--gold-l:#c8a84b;--gold-xl:#f5eed8;
+  --ink:#1a1f16;--ink2:#3d4a35;--ink3:#7a8a72;
+  --paper:#f7f5f0;--paper2:#edeae2;--paper3:#e2ddd2;
+  --white:#ffffff;
+  --alert:#b83232;--alert-bg:#fdf0f0;
+  --border:rgba(45,90,27,.12);
+  --shadow:0 2px 12px rgba(45,90,27,.08);
+  --r:10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--paper);color:var(--ink);font-size:15px;line-height:1.5}
+
+/* ── NAV ── */
+nav{background:var(--forest-d);position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.25)}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;padding:0 1.5rem;height:52px;position:relative}
+.nav-brand{display:flex;align-items:center;white-space:nowrap;flex-shrink:0}
+.nav-brand-text{font-size:14px;font-weight:700;color:#fff;letter-spacing:.02em}
+.nav-brand-sep{color:var(--gold-l);margin:0 7px;font-size:12px;opacity:.7}
+.nav-links{display:flex;align-items:center;gap:0;margin:0 auto}
+.nav-links a{color:rgba(255,255,255,.72);text-decoration:none;font-size:13px;font-weight:500;padding:.9rem 1rem;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;letter-spacing:.01em;white-space:nowrap;height:52px;display:flex;align-items:center}
+.nav-links a:hover,.nav-links a.active{color:#fff;border-color:var(--gold-l)}
+
+/* Hamburger – só mobile */
+.nav-hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:6px;margin-left:auto}
+.nav-hamburger span{display:block;width:22px;height:2px;background:rgba(255,255,255,.85);border-radius:2px;transition:all .25s}
+.nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-hamburger.open span:nth-child(2){opacity:0}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* Mobile drawer */
+.nav-mobile{display:none;position:absolute;top:52px;left:0;right:0;background:var(--forest-d);border-top:1px solid rgba(255,255,255,.08);box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:200}
+.nav-mobile.open{display:block}
+.nav-mobile a{display:block;color:rgba(255,255,255,.8);text-decoration:none;font-size:14px;font-weight:500;padding:.9rem 1.5rem;border-left:3px solid transparent;transition:all .15s}
+.nav-mobile a:hover,.nav-mobile a.active{color:#fff;border-color:var(--gold-l);background:rgba(255,255,255,.05)}
+
+/* ── HERO – full (visão geral) ── */
+.hero{background:linear-gradient(135deg,var(--forest-d) 0%,var(--forest) 60%,var(--forest-l) 100%);color:#fff;padding:3rem 2rem 2.5rem;position:relative;overflow:hidden;transition:padding .35s,min-height .35s}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;border-radius:50%;background:rgba(200,168,75,.07);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-60px;left:20%;width:300px;height:300px;border-radius:50%;background:rgba(200,168,75,.05);pointer-events:none}
+.hero-inner{max-width:1200px;margin:0 auto;position:relative}
+.hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:300;line-height:1.2;margin-bottom:8px}
+.hero h1 strong{font-weight:700}
+.hero-sub{font-size:14px;color:rgba(255,255,255,.6);font-weight:300;margin-bottom:2rem;line-height:1.6;max-width:560px;transition:opacity .3s,max-height .35s}
+.hero-kpis{display:flex;gap:1.5rem;flex-wrap:wrap;transition:opacity .3s,max-height .35s}
+.hero-kpi{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:.9rem 1.2rem;backdrop-filter:blur(4px)}
+.hero-kpi .kv{font-size:1.6rem;font-weight:700;color:#fff;line-height:1}
+.hero-kpi .kl{font-size:11px;color:rgba(255,255,255,.6);margin-top:3px;letter-spacing:.04em}
+
+/* Hero compacto – outras páginas */
+.hero.compact{padding:1.4rem 2rem 1.3rem}
+.hero.compact .hero-sub{display:none}
+.hero.compact .hero-kpis{display:none}
+.hero.compact h1{font-size:clamp(1.2rem,3vw,1.8rem);margin-bottom:0}
+/* Mini KPIs no compact */
+.hero-mini-kpis{display:none;gap:1.2rem;flex-wrap:wrap;margin-top:.8rem}
+.hero.compact .hero-mini-kpis{display:flex}
+.hero-mini-kpi{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:.5rem .9rem;backdrop-filter:blur(4px)}
+.hero-mini-kpi .mkv{font-size:1rem;font-weight:700;color:#fff;line-height:1}
+.hero-mini-kpi .mkl{font-size:10px;color:rgba(255,255,255,.55);margin-top:2px;letter-spacing:.04em}
+
+/* Hero scrolled – diminui ao rolar (só visão geral) */
+.hero.scrolled{padding:1rem 2rem}
+.hero.scrolled .hero-sub,.hero.scrolled .hero-kpis{opacity:0;max-height:0;overflow:hidden;margin:0;pointer-events:none}
+.hero.scrolled h1{font-size:clamp(1rem,2.5vw,1.4rem);margin-bottom:0}
+
+/* ── CONTENT ── */
+.page{max-width:1200px;margin:0 auto;padding:2rem 1.5rem 4rem}
+
+/* ── SECTIONS ── */
+.section{margin-bottom:3rem}
+.section-head{display:flex;align-items:baseline;gap:12px;margin-bottom:1.2rem;padding-bottom:.6rem;border-bottom:2px solid var(--forest-xl)}
+.section-head h2{font-size:1.1rem;font-weight:600;color:var(--forest-d);letter-spacing:.01em}
+.section-head .sh-meta{font-size:12px;color:var(--ink3);margin-left:auto}
+.section-head .sh-dot{width:8px;height:8px;border-radius:50%;background:var(--forest);flex-shrink:0;margin-bottom:1px}
+
+/* ── ALERT BOX ── */
+.alert-box{background:var(--alert-bg);border:1px solid rgba(184,50,50,.15);border-left:3px solid var(--alert);border-radius:8px;padding:1.1rem 1.4rem;margin-bottom:2rem}
+.alert-title{display:flex;align-items:center;gap:8px;font-weight:600;font-size:.9rem;color:var(--alert);margin-bottom:8px}
+.alert-box p{font-size:13px;color:#5a2020;line-height:1.6;margin-bottom:10px}
+.out-t{width:100%;border-collapse:collapse;font-size:12px}
+.out-t th{padding:5px 10px;color:var(--alert);font-weight:600;font-size:10px;letter-spacing:.06em;text-transform:uppercase;text-align:left;border-bottom:.5px solid rgba(184,50,50,.2)}
+.out-t th:not(:first-child),.out-t td:not(:first-child){text-align:right}
+.out-t td{padding:6px 10px;color:#5a2020;border-bottom:.5px solid rgba(184,50,50,.08)}
+.out-t tr:last-child td{border-bottom:none}
+
+/* ── METRIC CARDS ── */
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1rem}
+.mgrid-4{grid-template-columns:repeat(4,1fr)}
+.mcard{background:var(--white);border:.5px solid var(--border);border-radius:var(--r);padding:1rem 1.1rem;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.mcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.mcard.g1::before{background:var(--forest)}
+.mcard.g2::before{background:var(--forest-l)}
+.mcard.g3::before{background:var(--gold-l)}
+.mcard.g4::before{background:var(--gold)}
+.mcard.gvv::before{background:linear-gradient(90deg,var(--forest),var(--forest-l))}
+.mrole{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
+.mval{font-size:1.5rem;font-weight:700;color:var(--ink);line-height:1.1;margin-bottom:2px}
+.mval.big{font-size:2rem;color:var(--forest-d)}
+.msub{font-size:11px;color:var(--ink3)}
+
+/* ── GVV HIGHLIGHT ── */
+.gvv-card{background:linear-gradient(135deg,var(--forest-d),var(--forest));color:#fff;border-radius:12px;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap;box-shadow:0 4px 24px rgba(45,90,27,.3)}
+.gvv-main .gv{font-size:2.8rem;font-weight:800;line-height:1;color:#fff}
+.gvv-main .gl{font-size:12px;color:rgba(255,255,255,.6);letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
+.gvv-stats{display:flex;gap:1.5rem;flex-wrap:wrap}
+.gvv-stat .sv{font-size:1.2rem;font-weight:700;color:#fff}
+.gvv-stat .sl{font-size:11px;color:rgba(255,255,255,.55);margin-top:2px}
+
+/* ── FAIXA BARS ── */
+.faixa-list{display:flex;flex-direction:column;gap:8px}
+.faixa-row{background:var(--white);border:.5px solid var(--border);border-radius:8px;padding:.7rem 1rem;display:flex;align-items:center;gap:12px;font-size:13px}
+.faixa-label{min-width:180px;color:var(--ink2);font-size:12px}
+.faixa-bar-wrap{flex:1;height:8px;background:var(--paper3);border-radius:4px;overflow:hidden}
+.faixa-bar{height:100%;border-radius:4px;background:var(--forest);transition:width .4s}
+.faixa-count{min-width:50px;text-align:right;font-weight:600;color:var(--forest-d)}
+.faixa-pct{min-width:44px;text-align:right;font-size:11px;color:var(--ink3)}
+
+/* ── QUADRA CARDS ── */
+.quadra-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.qcard{background:var(--white);border:.5px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s}
+.qcard:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(45,90,27,.14)}
+.qcard-head{background:var(--forest-d);color:#fff;padding:.8rem 1.1rem;display:flex;align-items:center;justify-content:space-between}
+.qcard-name{font-size:.95rem;font-weight:700;letter-spacing:.04em}
+.qcard-badge{font-size:11px;background:rgba(200,168,75,.25);color:var(--gold-l);padding:2px 8px;border-radius:12px;font-weight:600}
+.qcard-body{padding:1rem 1.1rem}
+.qcard-kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:.8rem}
+.qkpi{background:var(--paper);border-radius:6px;padding:.5rem .6rem}
+.qkpi .qkv{font-size:.9rem;font-weight:700;color:var(--forest-d)}
+.qkpi .qkl{font-size:10px;color:var(--ink3);margin-top:1px}
+.qcard-gvv{background:var(--forest-xl);border-radius:6px;padding:.55rem .8rem;display:flex;justify-content:space-between;align-items:center}
+.qcard-gvv .gv{font-size:1rem;font-weight:700;color:var(--forest-d)}
+.qcard-gvv .gl{font-size:11px;color:var(--forest);font-weight:500}
+.qcard-m2row{display:flex;justify-content:space-between;align-items:center;margin-top:.6rem;font-size:12px;color:var(--ink3)}
+.qcard-m2row span{color:var(--ink2);font-weight:500}
+
+/* ── MINI CHART ── */
+.mini-bar-wrap{margin-top:.7rem}
+.mini-bar-label{font-size:10px;color:var(--ink3);margin-bottom:3px}
+.mini-bars{display:flex;gap:2px;align-items:flex-end;height:36px}
+.mini-bar{flex:1;background:var(--forest-l);border-radius:2px 2px 0 0;min-height:3px;opacity:.8}
+.mini-bar.highlight{background:var(--forest-d);opacity:1}
+
+/* ── LOTES TABLE ── */
+.lotes-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;align-items:center}
+.filter-btn{font-size:12px;font-weight:500;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--ink2);cursor:pointer;transition:all .15s}
+.filter-btn:hover,.filter-btn.active{background:var(--forest);color:#fff;border-color:var(--forest)}
+.filter-label{font-size:12px;color:var(--ink3);margin-right:4px}
+.search-input{font-size:13px;padding:5px 12px;border:1px solid var(--border);border-radius:20px;outline:none;background:var(--white);color:var(--ink);margin-left:auto}
+.search-input:focus{border-color:var(--forest)}
+.tcard{background:var(--white);border:.5px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.thead-row{padding:.9rem 1.2rem .7rem;border-bottom:.5px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.thead-row h3{font-size:.95rem;font-weight:600;color:var(--forest-d)}
+.thead-row .tr-meta{font-size:12px;color:var(--ink3)}
+.t-wrap{overflow-x:auto}
+table.main{width:100%;border-collapse:collapse;font-size:13px}
+table.main thead th{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);padding:8px 12px;text-align:left;border-bottom:.5px solid var(--border);background:var(--paper);white-space:nowrap;cursor:pointer;user-select:none}
+table.main thead th:hover{color:var(--forest)}
+table.main thead th:not(:first-child){text-align:right}
+table.main tbody td{padding:9px 12px;color:var(--ink);border-bottom:.5px solid var(--border)}
+table.main tbody tr:last-child td{border-bottom:none}
+table.main tbody td:not(:first-child){text-align:right}
+table.main tbody tr:hover td{background:var(--forest-xl)}
+.td-qd{font-size:11px;font-weight:600;color:var(--forest);background:var(--forest-xl);padding:2px 7px;border-radius:10px;display:inline-block}
+.td-val-min{color:var(--forest)}
+.td-val-max{color:var(--forest-d);font-weight:600}
+.t-footer{padding:.6rem 1.2rem;border-top:.5px solid var(--border);font-size:12px;color:var(--ink3);background:var(--paper)}
+
+/* ── SVG CHART ── */
+.chart-card{background:var(--white);border:.5px solid var(--border);border-radius:12px;padding:1.2rem 1.4rem 1rem;box-shadow:var(--shadow)}
+.chart-title{font-size:.9rem;font-weight:600;color:var(--forest-d);margin-bottom:3px}
+.chart-sub{font-size:11px;color:var(--ink3);margin-bottom:1rem}
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:2rem}
+
+/* ── PAGES ── */
+.page-section{display:none}.page-section.active{display:block}
+
+/* ── FOOTER ── */
+.site-footer{background:var(--forest-d);color:rgba(255,255,255,.5);text-align:center;font-size:11px;padding:1.2rem;letter-spacing:.04em;margin-top:2rem}
+.site-footer strong{color:rgba(255,255,255,.8)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .mgrid{grid-template-columns:1fr 1fr}
+  .mgrid-4{grid-template-columns:1fr 1fr}
+  .chart-row{grid-template-columns:1fr}
+  .hero-kpis{gap:.8rem}
+  .hero-kpi .kv{font-size:1.2rem}
+  .gvv-card{padding:1rem 1.2rem}
+  .gvv-main .gv{font-size:2rem}
+  .quadra-grid{grid-template-columns:1fr}
+  .mgrid-4{grid-template-columns:repeat(2,1fr)}
+  .faixa-label{min-width:120px;font-size:11px}
+  .nav-inner{padding:0 1rem}
+  .nav-links{display:none}
+  .nav-hamburger{display:flex}
+  .hero{padding:2rem 1rem 1.5rem}
+  .hero h1{font-size:1.5rem}
+  .hero.compact{padding:1.2rem 1rem}
+  .page{padding:1.5rem 1rem 3rem}
+}
+@media(max-width:480px){
+  .mgrid{grid-template-columns:1fr}
+  .qcard-kpis{grid-template-columns:1fr 1fr}
+  .gvv-card{flex-direction:column;gap:1rem}
+  .gvv-stats{gap:1rem}
+  .hero-kpis{gap:.6rem}
+  .hero-kpi{padding:.7rem .9rem}
+  .hero-mini-kpis{gap:.7rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <span class="nav-brand-text">Quintas da Mata<span class="nav-brand-sep">·</span>Lançar 21</span>
+    </div>
+    <div class="nav-links" id="nav-links-desktop">
+      <a href="#" class="active" onclick="showPage('visao-geral',this);closeMobile()">Visão Geral</a>
+      <a href="#" onclick="showPage('por-quadra',this);closeMobile()">Por Quadra</a>
+      <a href="#" onclick="showPage('todos-lotes',this);closeMobile()">Lotes</a>
+      <a href="#" onclick="showPage('gvv',this);closeMobile()">GVV</a>
+    </div>
+    <button class="nav-hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobile()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <!-- Mobile drawer -->
+  <div class="nav-mobile" id="nav-mobile">
+    <a href="#" class="active" onclick="showPage('visao-geral',this);closeMobile()">Visão Geral</a>
+    <a href="#" onclick="showPage('por-quadra',this);closeMobile()">Por Quadra</a>
+    <a href="#" onclick="showPage('todos-lotes',this);closeMobile()">Lotes</a>
+    <a href="#" onclick="showPage('gvv',this);closeMobile()">GVV</a>
+  </div>
+</nav>
+
+<!-- HERO dinâmico – conteúdo atualizado por showPage() -->
+<div class="hero" id="hero-block">
+  <div class="hero-inner">
+    <h1 id="hero-title"><strong>Quintas da Mata</strong><br>Inteligência de Mercado</h1>
+    <p class="hero-sub" id="hero-sub">Análise completa do estoque disponível · 123 lotes em 11 quadras · Dados atualizados</p>
+    <!-- KPIs completos – só visão geral -->
+    <div class="hero-kpis" id="hero-kpis-full">
+      <div class="hero-kpi"><div class="kv">123</div><div class="kl">Lotes disponíveis</div></div>
+      <div class="hero-kpi"><div class="kv">11</div><div class="kl">Quadras ativas</div></div>
+      <div class="hero-kpi"><div class="kv">R$ 8,38 M</div><div class="kl">GVV Total</div></div>
+      <div class="hero-kpi"><div class="kv">1 ⚑</div><div class="kl">Ponto fora da curva</div></div>
+    </div>
+    <!-- Mini KPIs – outras páginas -->
+    <div class="hero-mini-kpis" id="hero-mini-kpis"></div>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ═══════════════════ VISÃO GERAL ═══════════════════ -->
+<div id="pg-visao-geral" class="page-section active">
+  <div style="margin-top:1.5rem">
+  <div class="alert-box">
+    <div class="alert-title">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M10 2.5L18 17H2L10 2.5Z" stroke="#b83232" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8.5V12" stroke="#b83232" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="14.5" r=".8" fill="#b83232"/></svg>
+      Ponto fora da curva identificado — excluído da análise principal
+    </div>
+    <p>O <strong>Lote 2 da QD-17</strong> possui área de <strong>153,2 m²</strong> — inferior ao mínimo de 160 m² adotado como critério. Seu valor final de <strong style="color:var(--alert)">R$ 49.024</strong> é o único abaixo do piso de R$ 51.200. Este lote foi excluído de todas as médias e agrupamentos.</p>
+    <table class="out-t">
+      <thead><tr><th>Quadra</th><th>Lote</th><th>Área (m²)</th><th>R$/m²</th><th>Valor final</th><th>Motivo</th></tr></thead>
+      <tbody>
+        <tr><td><strong>QD-17</strong></td><td>2</td><td>153,2</td><td>R$ 320,00</td><td style="color:var(--alert);font-weight:700">R$ 49.024</td><td>Área &lt;160 m² + abaixo do piso</td></tr>
+      </tbody>
+    </table>
+  </div>
+  </div>
+
+  <div class="gvv-card">
+    <div class="gvv-main">
+      <div class="gv" id="gvv-total">R$ 8.377.406</div>
+      <div class="gl">GVV — Geral de Vendas a Verificar · 123 lotes</div>
+    </div>
+    <div class="gvv-stats">
+      <div class="gvv-stat"><div class="sv">R$ 51.200</div><div class="sl">Menor lote</div></div>
+      <div class="gvv-stat"><div class="sv">R$ 68.109</div><div class="sl">Ticket médio</div></div>
+      <div class="gvv-stat"><div class="sv">R$ 147.240</div><div class="sl">Maior lote</div></div>
+      <div class="gvv-stat"><div class="sv">R$ 68.109</div><div class="sl">Ticket médio</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="sh-dot"></div>
+      <h2>Resumo da base · 123 lotes (m² ≥ 160)</h2>
+    </div>
+    <div style="margin-bottom:10px"><div class="mrole" style="color:var(--ink3);font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">Valor final (R$)</div></div>
+    <div class="mgrid" style="margin-bottom:1.5rem">
+      <div class="mcard g1"><div class="mrole">Mínimo</div><div class="mval">R$ 51.200</div><div class="msub">Piso de referência</div></div>
+      <div class="mcard g2"><div class="mrole">Médio</div><div class="mval">R$ 68.109</div><div class="msub">Ticket médio da base</div></div>
+      <div class="mcard g3"><div class="mrole">Máximo</div><div class="mval">R$ 147.240</div><div class="msub">Maior lote disponível</div></div>
+    </div>
+    <div style="margin-bottom:10px"><div class="mrole" style="color:var(--ink3);font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">Preço por m² (R$/m²)</div></div>
+    <div class="mgrid" style="margin-bottom:1.5rem">
+      <div class="mcard g1"><div class="mrole">Mínimo</div><div class="mval">R$ 300/m²</div><div class="msub">Faixa mais econômica</div></div>
+      <div class="mcard g2"><div class="mrole">Médio</div><div class="mval">R$ 354/m²</div><div class="msub">Média ponderada</div></div>
+      <div class="mcard g3"><div class="mrole">Máximo</div><div class="mval">R$ 378/m²</div><div class="msub">Faixa premium</div></div>
+    </div>
+    <div style="margin-bottom:10px"><div class="mrole" style="color:var(--ink3);font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">Tamanho dos lotes (m²)</div></div>
+    <div class="mgrid">
+      <div class="mcard g1"><div class="mrole">Mínimo</div><div class="mval">160,0 m²</div><div class="msub">Menor lote da base</div></div>
+      <div class="mcard g2"><div class="mrole">Médio</div><div class="mval">193,4 m²</div><div class="msub">Tamanho típico</div></div>
+      <div class="mcard g3"><div class="mrole">Máximo</div><div class="mval">490,8 m²</div><div class="msub">Maior lote disponível</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="sh-dot"></div>
+      <h2>Distribuição por faixa de valor</h2>
+      <span class="sh-meta">123 lotes disponíveis</span>
+    </div>
+    <div class="faixa-list" id="faixa-list"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><div class="sh-dot"></div><h2>Visualização</h2></div>
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="chart-title">GVV por quadra</div>
+        <div class="chart-sub">Soma dos valores disponíveis em R$</div>
+        <div id="chart-gvv-quadra"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Lotes por quadra</div>
+        <div class="chart-sub">Quantidade de lotes disponíveis</div>
+        <div id="chart-lotes-quadra"></div>
+      </div>
+    </div>
+  </div>
+</div><!-- /visao-geral -->
+
+<!-- ═══════════════════ POR QUADRA ═══════════════════ -->
+<div id="pg-por-quadra" class="page-section">
+  <div style="margin-top:1.5rem" class="section">
+    <div class="section-head"><div class="sh-dot"></div><h2>Análise por Quadra</h2><span class="sh-meta">11 quadras · 123 lotes</span></div>
+    <div class="quadra-grid" id="quadra-grid"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TODOS OS LOTES ═══════════════════ -->
+<div id="pg-todos-lotes" class="page-section">
+  <div style="margin-top:1.5rem" class="section">
+    <div class="section-head"><div class="sh-dot"></div><h2>Todos os Lotes</h2><span class="sh-meta" id="lotes-count-label">123 lotes</span></div>
+    <div class="lotes-filter">
+      <span class="filter-label">Quadra:</span>
+      <button class="filter-btn active" onclick="filterQuadra('ALL',this)">Todas</button>
+      <div id="quadra-filter-btns"></div>
+      <input class="search-input" type="text" placeholder="Buscar lote..." oninput="filterSearch(this.value)" id="search-input">
+    </div>
+    <div class="tcard">
+      <div class="thead-row">
+        <h3>Lotes disponíveis</h3>
+        <span class="tr-meta" id="table-meta">123 exibidos</span>
+      </div>
+      <div class="t-wrap">
+        <table class="main" id="lotes-table">
+          <thead><tr>
+            <th onclick="sortTable('quadra')">Quadra ↕</th>
+            <th onclick="sortTable('lote')">Lote ↕</th>
+            <th onclick="sortTable('m2')">Área (m²) ↕</th>
+            <th onclick="sortTable('vl_m2')">R$/m² ↕</th>
+            <th onclick="sortTable('preco')">Valor final ↕</th>
+            <th onclick="sortTable('entrada')">Entrada (10%) ↕</th>
+          </tr></thead>
+          <tbody id="lotes-tbody"></tbody>
+        </table>
+      </div>
+      <div class="t-footer" id="t-footer">Exibindo todos os 123 lotes disponíveis</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ GVV ═══════════════════ -->
+<div id="pg-gvv" class="page-section">
+  <div style="margin-top:1.5rem">
+  <div class="gvv-card" style="margin-bottom:2rem">
+    <div class="gvv-main">
+      <div class="gv">R$ 8.377.406</div>
+      <div class="gl">GVV Total · Geral de Vendas a Verificar · 123 lotes</div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-head"><div class="sh-dot"></div><h2>GVV por Quadra</h2></div>
+    <div class="mgrid mgrid-4" id="gvv-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))"></div>
+  </div>
+  <div class="section">
+    <div class="section-head"><div class="sh-dot"></div><h2>Participação no GVV</h2></div>
+    <div class="chart-card">
+      <div class="chart-title">Contribuição de cada quadra para o GVV total</div>
+      <div class="chart-sub">Em percentual do valor total disponível</div>
+      <div id="chart-gvv-pct"></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-head"><div class="sh-dot"></div><h2>Análise de ticket médio vs GVV</h2></div>
+    <div class="tcard">
+      <div class="thead-row"><h3>Comparativo por quadra</h3><span class="tr-meta">11 quadras</span></div>
+      <div class="t-wrap">
+        <table class="main" id="gvv-table">
+          <thead><tr>
+            <th>Quadra</th><th>Lotes</th><th>GVV</th><th>% do GVV</th><th>Ticket mín.</th><th>Ticket médio</th><th>Ticket máx.</th><th>Área média</th>
+          </tr></thead>
+          <tbody id="gvv-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<footer class="site-footer">
+  <strong>Lançar 21</strong> · Inteligência de Mercado · Dashboard Quintas da Mata · Uso exclusivo interno
+</footer>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const D = {"total_lotes": 123, "gvv": 8377405.62512, "preco_min": 51200.0, "preco_med": 68108.98882211382, "preco_max": 147240.0, "m2_min": 160.0, "m2_med": 193.38252032520327, "m2_max": 490.8, "vlm2_min": 300.0, "vlm2_med": 354.49659170469346, "vlm2_max": 378.453792875, "outliers": [{"quadra": "QD-17", "lote": 2, "m2": 153.2, "vl_m2": 320.0, "preco": 49024.0}], "por_quadra": [{"quadra": "QD-10", "qtd": 4, "preco_min": 51200.0, "preco_med": 57930.0, "preco_max": 78120.0, "m2_total": 732.0, "gvv": 231720.0, "m2_med": 183.0, "vlm2_min": 310.0, "vlm2_med": 317.5, "vlm2_max": 320.0}, {"quadra": "QD-11", "qtd": 7, "preco_min": 51200.0, "preco_med": 58891.43, "preco_max": 78120.0, "m2_total": 1304.0, "gvv": 412240.0, "m2_med": 186.29, "vlm2_min": 310.0, "vlm2_med": 317.14, "vlm2_max": 320.0}, {"quadra": "QD-12", "qtd": 12, "preco_min": 60552.61, "preco_med": 80628.52, "preco_max": 130204.55, "m2_total": 2584.63, "gvv": 967542.19, "m2_med": 215.39, "vlm2_min": 365.23, "vlm2_med": 375.15, "vlm2_max": 378.45}, {"quadra": "QD-14", "qtd": 19, "preco_min": 58436.82, "preco_med": 63829.76, "preco_max": 87655.24, "m2_total": 3280.0, "gvv": 1212765.38, "m2_med": 172.63, "vlm2_min": 365.23, "vlm2_med": 370.1, "vlm2_max": 378.45}, {"quadra": "QD-15", "qtd": 6, "preco_min": 51200.0, "preco_med": 82786.67, "preco_max": 147240.0, "m2_total": 1618.4, "gvv": 496720.0, "m2_med": 269.73, "vlm2_min": 300.0, "vlm2_med": 310.0, "vlm2_max": 320.0}, {"quadra": "QD-17", "qtd": 6, "preco_min": 51200.0, "preco_med": 73931.38, "preco_max": 102675.0, "m2_total": 1440.47, "gvv": 443588.3, "m2_med": 240.08, "vlm2_min": 300.0, "vlm2_med": 310.0, "vlm2_max": 320.0}, {"quadra": "QD-18", "qtd": 19, "preco_min": 59313.38, "preco_med": 77211.11, "preco_max": 116544.94, "m2_total": 3966.15, "gvv": 1467011.15, "m2_med": 208.74, "vlm2_min": 365.23, "vlm2_med": 370.8, "vlm2_max": 378.45}, {"quadra": "QD-19", "qtd": 38, "preco_min": 58436.82, "preco_med": 64047.17, "preco_max": 144813.76, "m2_total": 6600.0, "gvv": 2433792.61, "m2_med": 173.68, "vlm2_min": 365.23, "vlm2_med": 369.06, "vlm2_max": 378.45}, {"quadra": "QD-25", "qtd": 4, "preco_min": 51200.0, "preco_med": 52406.5, "preco_max": 55314.0, "m2_total": 660.4, "gvv": 209626.0, "m2_med": 165.1, "vlm2_min": 315.0, "vlm2_med": 317.5, "vlm2_max": 320.0}, {"quadra": "QD-28", "qtd": 4, "preco_min": 51200.0, "preco_med": 62800.0, "preco_max": 74400.0, "m2_total": 800.0, "gvv": 251200.0, "m2_med": 200.0, "vlm2_min": 310.0, "vlm2_med": 315.0, "vlm2_max": 320.0}, {"quadra": "QD-29", "qtd": 4, "preco_min": 51200.0, "preco_med": 62800.0, "preco_max": 74400.0, "m2_total": 800.0, "gvv": 251200.0, "m2_med": 200.0, "vlm2_min": 310.0, "vlm2_med": 315.0, "vlm2_max": 320.0}], "lotes": [{"quadra": "QD-10", "lote": 1, "m2": 252.0, "vl_m2": 310.0, "preco": 78120.0, "entrada": 7812.0}, {"quadra": "QD-10", "lote": 21, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-10", "lote": 23, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-10", "lote": 33, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-11", "lote": 1, "m2": 252.0, "vl_m2": 310.0, "preco": 78120.0, "entrada": 7812.0}, {"quadra": "QD-11", "lote": 4, "m2": 252.0, "vl_m2": 310.0, "preco": 78120.0, "entrada": 7812.0}, {"quadra": "QD-11", "lote": 37, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-11", "lote": 38, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-11", "lote": 42, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-11", "lote": 44, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-11", "lote": 47, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-12", "lote": 1, "m2": 268.0, "vl_m2": 378.45, "preco": 101425.62, "entrada": 10142.56}, {"quadra": "QD-12", "lote": 2, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-12", "lote": 3, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-12", "lote": 4, "m2": 213.96, "vl_m2": 378.45, "preco": 80973.97, "entrada": 8097.4}, {"quadra": "QD-12", "lote": 5, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-12", "lote": 6, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-12", "lote": 7, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-12", "lote": 8, "m2": 339.5, "vl_m2": 378.45, "preco": 128485.05, "entrada": 12848.51}, {"quadra": "QD-12", "lote": 11, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-12", "lote": 12, "m2": 240.0, "vl_m2": 365.23, "preco": 87655.24, "entrada": 8765.52}, {"quadra": "QD-12", "lote": 13, "m2": 356.5, "vl_m2": 365.23, "preco": 130204.55, "entrada": 13020.46}, {"quadra": "QD-12", "lote": 14, "m2": 206.67, "vl_m2": 365.23, "preco": 75482.12, "entrada": 7548.21}, {"quadra": "QD-14", "lote": 1, "m2": 240.0, "vl_m2": 365.23, "preco": 87655.24, "entrada": 8765.52}, {"quadra": "QD-14", "lote": 2, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-14", "lote": 3, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-14", "lote": 4, "m2": 240.0, "vl_m2": 365.23, "preco": 87655.24, "entrada": 8765.52}, {"quadra": "QD-14", "lote": 5, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-14", "lote": 6, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-14", "lote": 7, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-14", "lote": 8, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-14", "lote": 14, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-14", "lote": 15, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-14", "lote": 16, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-14", "lote": 17, "m2": 240.0, "vl_m2": 365.23, "preco": 87655.24, "entrada": 8765.52}, {"quadra": "QD-14", "lote": 18, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-14", "lote": 21, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-14", "lote": 22, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-14", "lote": 23, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-14", "lote": 28, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-14", "lote": 29, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-14", "lote": 30, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-15", "lote": 1, "m2": 240.0, "vl_m2": 310.0, "preco": 74400.0, "entrada": 7440.0}, {"quadra": "QD-15", "lote": 2, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-15", "lote": 3, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-15", "lote": 4, "m2": 240.0, "vl_m2": 310.0, "preco": 74400.0, "entrada": 7440.0}, {"quadra": "QD-15", "lote": 19, "m2": 327.6, "vl_m2": 300.0, "preco": 98280.0, "entrada": 9828.0}, {"quadra": "QD-15", "lote": 20, "m2": 490.8, "vl_m2": 300.0, "preco": 147240.0, "entrada": 14724.0}, {"quadra": "QD-17", "lote": 1, "m2": 184.42, "vl_m2": 315.0, "preco": 58092.3, "entrada": 5809.23}, {"quadra": "QD-17", "lote": 3, "m2": 171.2, "vl_m2": 315.0, "preco": 53928.0, "entrada": 5392.8}, {"quadra": "QD-17", "lote": 4, "m2": 278.1, "vl_m2": 305.0, "preco": 84820.5, "entrada": 8482.05}, {"quadra": "QD-17", "lote": 11, "m2": 304.5, "vl_m2": 305.0, "preco": 92872.5, "entrada": 9287.25}, {"quadra": "QD-17", "lote": 12, "m2": 342.25, "vl_m2": 300.0, "preco": 102675.0, "entrada": 10267.5}, {"quadra": "QD-17", "lote": 18, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-18", "lote": 1, "m2": 248.4, "vl_m2": 365.23, "preco": 90723.17, "entrada": 9072.32}, {"quadra": "QD-18", "lote": 2, "m2": 164.4, "vl_m2": 365.23, "preco": 60043.84, "entrada": 6004.38}, {"quadra": "QD-18", "lote": 3, "m2": 163.4, "vl_m2": 365.23, "preco": 59678.61, "entrada": 5967.86}, {"quadra": "QD-18", "lote": 4, "m2": 162.4, "vl_m2": 365.23, "preco": 59313.38, "entrada": 5931.34}, {"quadra": "QD-18", "lote": 5, "m2": 314.95, "vl_m2": 365.23, "preco": 115029.23, "entrada": 11502.92}, {"quadra": "QD-18", "lote": 6, "m2": 252.8, "vl_m2": 365.23, "preco": 92330.18, "entrada": 9233.02}, {"quadra": "QD-18", "lote": 7, "m2": 251.8, "vl_m2": 365.23, "preco": 91964.95, "entrada": 9196.5}, {"quadra": "QD-18", "lote": 8, "m2": 247.6, "vl_m2": 365.23, "preco": 90430.98, "entrada": 9043.1}, {"quadra": "QD-18", "lote": 9, "m2": 235.0, "vl_m2": 365.23, "preco": 85829.09, "entrada": 8582.91}, {"quadra": "QD-18", "lote": 10, "m2": 210.8, "vl_m2": 365.23, "preco": 76990.52, "entrada": 7699.05}, {"quadra": "QD-18", "lote": 11, "m2": 319.1, "vl_m2": 365.23, "preco": 116544.94, "entrada": 11654.49}, {"quadra": "QD-18", "lote": 12, "m2": 275.5, "vl_m2": 378.45, "preco": 104264.01, "entrada": 10426.4}, {"quadra": "QD-18", "lote": 13, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-18", "lote": 14, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-18", "lote": 15, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-18", "lote": 16, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-18", "lote": 17, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-18", "lote": 18, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-18", "lote": 19, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 1, "m2": 246.0, "vl_m2": 365.23, "preco": 89846.62, "entrada": 8984.66}, {"quadra": "QD-19", "lote": 2, "m2": 162.8, "vl_m2": 365.23, "preco": 59459.48, "entrada": 5945.95}, {"quadra": "QD-19", "lote": 3, "m2": 162.0, "vl_m2": 365.23, "preco": 59167.28, "entrada": 5916.73}, {"quadra": "QD-19", "lote": 4, "m2": 241.2, "vl_m2": 365.23, "preco": 88093.51, "entrada": 8809.35}, {"quadra": "QD-19", "lote": 5, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-19", "lote": 6, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-19", "lote": 7, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-19", "lote": 8, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-19", "lote": 9, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-19", "lote": 10, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-19", "lote": 11, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-19", "lote": 12, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-19", "lote": 13, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-19", "lote": 14, "m2": 224.7, "vl_m2": 365.23, "preco": 82067.21, "entrada": 8206.72}, {"quadra": "QD-19", "lote": 15, "m2": 206.8, "vl_m2": 365.23, "preco": 75529.59, "entrada": 7552.96}, {"quadra": "QD-19", "lote": 16, "m2": 396.5, "vl_m2": 365.23, "preco": 144813.76, "entrada": 14481.38}, {"quadra": "QD-19", "lote": 17, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 18, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 19, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 20, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 21, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 22, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 23, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 24, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 25, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 26, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 27, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-25", "lote": 15, "m2": 175.6, "vl_m2": 315.0, "preco": 55314.0, "entrada": 5531.4}, {"quadra": "QD-25", "lote": 16, "m2": 164.8, "vl_m2": 315.0, "preco": 51912.0, "entrada": 5191.2}, {"quadra": "QD-25", "lote": 17, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-25", "lote": 20, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-28", "lote": 1, "m2": 240.0, "vl_m2": 310.0, "preco": 74400.0, "entrada": 7440.0}, {"quadra": "QD-28", "lote": 2, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-28", "lote": 3, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-28", "lote": 4, "m2": 240.0, "vl_m2": 310.0, "preco": 74400.0, "entrada": 7440.0}, {"quadra": "QD-29", "lote": 1, "m2": 240.0, "vl_m2": 310.0, "preco": 74400.0, "entrada": 7440.0}, {"quadra": "QD-29", "lote": 2, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-29", "lote": 3, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-29", "lote": 4, "m2": 240.0, "vl_m2": 310.0, "preco": 74400.0, "entrada": 7440.0}]};
+
+const QD_COLORS = [
+  '#2d5a1b','#3a7022','#4a8a2e','#1e3d12','#5a9e3a','#234a18',
+  '#6ab04c','#8a6a1a','#2e6b30','#164010','#3d7a40'
+];
+
+const fmt = v => 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+const fmtM = v => {
+  if(v >= 1e6) return 'R$ ' + (v/1e6).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' M';
+  if(v >= 1e3) return 'R$ ' + (v/1e3).toFixed(0) + 'k';
+  return fmt(v);
+};
+
+// ── FAIXA DE VALOR ──
+const faixas = [
+  {l:'R$ 51.200 – 60.000', min:51200, max:60000, col:'#2d5a1b'},
+  {l:'R$ 60.000 – 70.000', min:60000, max:70000, col:'#3a7022'},
+  {l:'R$ 70.000 – 80.000', min:70000, max:80000, col:'#4a8a2e'},
+  {l:'R$ 80.000 – 90.000', min:80000, max:90000, col:'#5a9e3a'},
+  {l:'R$ 90.000 – 100.000',min:90000, max:100000,col:'#8a6a1a'},
+  {l:'R$ 100.000 – 120.000',min:100000,max:120000,col:'#c8a84b'},
+  {l:'Acima de R$ 120.000',min:120000,max:Infinity,col:'#7a8a72'},
+];
+const maxN = Math.max(...faixas.map(fx => D.lotes.filter(l=>l.preco>=fx.min&&l.preco<fx.max).length));
+const faixaEl = document.getElementById('faixa-list');
+faixas.forEach(fx=>{
+  const n = D.lotes.filter(l=>l.preco>=fx.min&&l.preco<fx.max).length;
+  const pct = (n/D.total_lotes*100).toFixed(1);
+  const barPct = Math.round(n/maxN*100);
+  faixaEl.innerHTML += `
+    <div class="faixa-row">
+      <span class="faixa-label">${fx.l}</span>
+      <div class="faixa-bar-wrap"><div class="faixa-bar" style="width:${barPct}%;background:${fx.col}"></div></div>
+      <span class="faixa-count">${n}</span>
+      <span class="faixa-pct">${pct}%</span>
+    </div>`;
+});
+
+// ── SVG CHART helper ──
+function svgBar(containerId, data, cols, labelFn, valueFn, formatFn){
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  const PL=90,PR=8,PT=4,PB=4,BH=22,GAP=6,W=420;
+  const maxV = Math.max(...data.map(valueFn));
+  const H = PT + data.length*(BH+GAP) - GAP + PB;
+  const AW = W-PL-PR;
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;font-family:inherit">`;
+  data.forEach((d,i)=>{
+    const y = PT+i*(BH+GAP);
+    const bw = Math.max(3, valueFn(d)/maxV*AW);
+    const col = Array.isArray(cols)?cols[i%cols.length]:cols;
+    const lbl = labelFn(d);
+    const val = formatFn(valueFn(d));
+    s+=`<text x="${PL-7}" y="${y+BH/2}" text-anchor="end" dominant-baseline="central" font-size="11" fill="#7a8a72">${lbl}</text>`;
+    s+=`<rect x="${PL}" y="${y}" width="${AW}" height="${BH}" rx="3" fill="#e2ddd2"/>`;
+    s+=`<rect x="${PL}" y="${y}" width="${bw}" height="${BH}" rx="3" fill="${col}"/>`;
+    const tx = PL+bw+6;
+    s+=`<text x="${tx}" y="${y+BH/2}" dominant-baseline="central" font-size="10" fill="#3d4a35" font-weight="600">${val}</text>`;
+  });
+  s+='</svg>';
+  el.innerHTML=s;
+}
+
+const qdSorted = [...D.por_quadra].sort((a,b)=>b.gvv-a.gvv);
+svgBar('chart-gvv-quadra', qdSorted, QD_COLORS, d=>d.quadra, d=>d.gvv, v=>fmtM(v));
+svgBar('chart-lotes-quadra', [...D.por_quadra].sort((a,b)=>b.qtd-a.qtd), QD_COLORS, d=>d.quadra, d=>d.qtd, v=>v+' lotes');
+
+// ── QUADRA CARDS ──
+const qdGrid = document.getElementById('quadra-grid');
+const totalGvv = D.gvv;
+D.por_quadra.forEach((q,i)=>{
+  const pct = (q.gvv/totalGvv*100).toFixed(1);
+  const lotesQd = D.lotes.filter(l=>l.quadra===q.quadra);
+  const precos = lotesQd.map(l=>l.preco).sort((a,b)=>a-b);
+  const maxP = Math.max(...precos);
+  const bars = precos.map(p=>{
+    const h = Math.max(4, Math.round(p/maxP*36));
+    return `<div class="mini-bar" style="height:${h}px"></div>`;
+  }).join('');
+  const col = QD_COLORS[i%QD_COLORS.length];
+  qdGrid.innerHTML += `
+    <div class="qcard">
+      <div class="qcard-head" style="background:${col}">
+        <span class="qcard-name">${q.quadra}</span>
+        <span class="qcard-badge">${q.qtd} lotes</span>
+      </div>
+      <div class="qcard-body">
+        <div class="qcard-kpis">
+          <div class="qkpi"><div class="qkv">${fmt(q.preco_min)}</div><div class="qkl">Mínimo</div></div>
+          <div class="qkpi"><div class="qkv">${fmt(q.preco_med)}</div><div class="qkl">Médio</div></div>
+          <div class="qkpi"><div class="qkv">${fmt(q.preco_max)}</div><div class="qkl">Máximo</div></div>
+        </div>
+        <div class="qcard-gvv">
+          <div class="gv">${fmtM(q.gvv)}</div>
+          <div class="gl">GVV (${pct}% do total)</div>
+        </div>
+        <div class="qcard-m2row">
+          <span>R$/m²: <span>${Math.round(q.vlm2_min)} – ${Math.round(q.vlm2_max)}</span></span>
+          <span>Área média: <span>${q.m2_med.toFixed(0)} m²</span></span>
+        </div>
+        <div class="mini-bar-wrap">
+          <div class="mini-bar-label">Distribuição de valores</div>
+          <div class="mini-bars">${bars}</div>
+        </div>
+      </div>
+    </div>`;
+});
+
+// ── GVV PAGE ──
+const gvvGrid = document.getElementById('gvv-grid');
+const gvvSorted = [...D.por_quadra].sort((a,b)=>b.gvv-a.gvv);
+gvvSorted.forEach((q,i)=>{
+  const pct=(q.gvv/totalGvv*100).toFixed(1);
+  const col=QD_COLORS[i%QD_COLORS.length];
+  gvvGrid.innerHTML+=`
+    <div class="mcard" style="border-top:3px solid ${col}">
+      <div class="mrole" style="color:${col}">${q.quadra}</div>
+      <div class="mval" style="font-size:1.1rem;color:var(--forest-d)">${fmtM(q.gvv)}</div>
+      <div class="msub">${q.qtd} lotes · ${pct}% do GVV</div>
+    </div>`;
+});
+
+svgBar('chart-gvv-pct', gvvSorted, QD_COLORS, d=>d.quadra, d=>d.gvv/totalGvv*100, v=>v.toFixed(1)+'%');
+
+const gvvTbody=document.getElementById('gvv-tbody');
+gvvSorted.forEach(q=>{
+  const pct=(q.gvv/totalGvv*100).toFixed(1);
+  gvvTbody.innerHTML+=`<tr>
+    <td><span class="td-qd">${q.quadra}</span></td>
+    <td>${q.qtd}</td>
+    <td style="font-weight:600;color:var(--forest-d)">${fmtM(q.gvv)}</td>
+    <td>${pct}%</td>
+    <td class="td-val-min">${fmt(q.preco_min)}</td>
+    <td>${fmt(q.preco_med)}</td>
+    <td class="td-val-max">${fmt(q.preco_max)}</td>
+    <td>${q.m2_med.toFixed(0)} m²</td>
+  </tr>`;
+});
+
+// ── LOTES TABLE ──
+let allLotes = [...D.lotes];
+let currentQd = 'ALL';
+let currentSearch = '';
+let sortKey = 'quadra';
+let sortAsc = true;
+
+const qfb=document.getElementById('quadra-filter-btns');
+[...new Set(D.lotes.map(l=>l.quadra))].sort().forEach(qd=>{
+  qfb.innerHTML+=`<button class="filter-btn" onclick="filterQuadra('${qd}',this)">${qd}</button>`;
+});
+
+function renderLotes(){
+  let data = [...allLotes];
+  if(currentQd!=='ALL') data=data.filter(l=>l.quadra===currentQd);
+  if(currentSearch) data=data.filter(l=>l.quadra.toLowerCase().includes(currentSearch)||String(l.lote).includes(currentSearch));
+  data.sort((a,b)=>{
+    let va=a[sortKey],vb=b[sortKey];
+    if(typeof va==='string') return sortAsc?va.localeCompare(vb):vb.localeCompare(va);
+    return sortAsc?va-vb:vb-va;
+  });
+  const minP=Math.min(...data.map(l=>l.preco));
+  const maxP=Math.max(...data.map(l=>l.preco));
+  const tb=document.getElementById('lotes-tbody');
+  tb.innerHTML='';
+  data.forEach(l=>{
+    const isMin=l.preco===minP;
+    const isMax=l.preco===maxP;
+    tb.innerHTML+=`<tr>
+      <td><span class="td-qd">${l.quadra}</span></td>
+      <td>${l.lote}</td>
+      <td>${l.m2.toFixed(1)}</td>
+      <td>R$ ${Math.round(l.vl_m2)}</td>
+      <td class="${isMin?'td-val-min':isMax?'td-val-max':''}" style="${isMax?'font-weight:700':''}">${fmt(l.preco)}</td>
+      <td>${fmt(l.entrada)}</td>
+    </tr>`;
+  });
+  document.getElementById('table-meta').textContent=data.length+' exibidos';
+  document.getElementById('t-footer').textContent=`Exibindo ${data.length} de ${allLotes.length} lotes disponíveis`;
+  document.getElementById('lotes-count-label').textContent=data.length+' lotes';
+}
+function filterQuadra(qd,btn){
+  currentQd=qd;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLotes();
+}
+function filterSearch(v){ currentSearch=v.toLowerCase(); renderLotes(); }
+function sortTable(key){ if(sortKey===key) sortAsc=!sortAsc; else {sortKey=key;sortAsc=true;} renderLotes(); }
+renderLotes();
+
+// ── HERO CONFIGS POR PÁGINA ──
+const heroConfig = {
+  'visao-geral': {
+    title: '<strong>Quintas da Mata</strong><br>Inteligência de Mercado',
+    compact: false,
+    mini: []
+  },
+  'por-quadra': {
+    title: '<strong>Quintas da Mata</strong> · Por Quadra',
+    compact: true,
+    mini: [
+      {v:'11', l:'Quadras ativas'},
+      {v:'123', l:'Lotes disponíveis'},
+      {v:'R$ 8,38 M', l:'GVV Total'}
+    ]
+  },
+  'todos-lotes': {
+    title: '<strong>Quintas da Mata</strong> · Todos os Lotes',
+    compact: true,
+    mini: [
+      {v:'123', l:'Lotes listados'},
+      {v:'R$ 51.200', l:'Menor valor'},
+      {v:'R$ 147.240', l:'Maior valor'},
+      {v:'R$ 68.109', l:'Ticket médio'}
+    ]
+  },
+  'gvv': {
+    title: '<strong>Quintas da Mata</strong> · GVV',
+    compact: true,
+    mini: [
+      {v:'R$ 8,38 M', l:'GVV Total'},
+      {v:'11', l:'Quadras'},
+      {v:'R$ 68.109', l:'Ticket médio'}
+    ]
+  }
+};
+
+// ── PAGE NAV ──
+function showPage(id, link){
+  document.querySelectorAll('.page-section').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pg-'+id).classList.add('active');
+  document.querySelectorAll('.nav-links a, .nav-mobile a').forEach(a=>a.classList.remove('active'));
+  if(link) link.classList.add('active');
+  // sync both desktop and mobile active state
+  const allLinks = document.querySelectorAll('.nav-links a, .nav-mobile a');
+  allLinks.forEach(a=>{
+    const onclick = a.getAttribute('onclick')||'';
+    if(onclick.includes("'"+id+"'")) a.classList.add('active');
+    else a.classList.remove('active');
+  });
+  updateHero(id);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateHero(id){
+  const cfg = heroConfig[id] || heroConfig['visao-geral'];
+  const hero = document.getElementById('hero-block');
+  const title = document.getElementById('hero-title');
+  const miniKpis = document.getElementById('hero-mini-kpis');
+
+  title.innerHTML = cfg.title;
+
+  if(cfg.compact){
+    hero.classList.add('compact');
+    miniKpis.innerHTML = cfg.mini.map(k=>`
+      <div class="hero-mini-kpi">
+        <div class="mkv">${k.v}</div>
+        <div class="mkl">${k.l}</div>
+      </div>`).join('');
+  } else {
+    hero.classList.remove('compact','scrolled');
+    miniKpis.innerHTML = '';
+  }
+}
+
+// ── SCROLL SHRINK (só visão geral) ──
+window.addEventListener('scroll', ()=>{
+  const hero = document.getElementById('hero-block');
+  if(!hero.classList.contains('compact')){
+    if(window.scrollY > 80) hero.classList.add('scrolled');
+    else hero.classList.remove('scrolled');
+  }
+});
+
+// ── HAMBURGER MOBILE ──
+function toggleMobile(){
+  const menu = document.getElementById('nav-mobile');
+  const btn = document.getElementById('hamburger');
+  menu.classList.toggle('open');
+  btn.classList.toggle('open');
+}
+function closeMobile(){
+  document.getElementById('nav-mobile').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+// Fecha ao clicar fora
+document.addEventListener('click', e=>{
+  const nav = document.querySelector('nav');
+  if(!nav.contains(e.target)) closeMobile();
+});
+</script>
+</body>
+</html>
