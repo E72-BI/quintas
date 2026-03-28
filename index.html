@@ -114,7 +114,7 @@ nav{background:var(--forest-d);position:fixed;top:0;left:0;right:0;z-index:1000;
 .mval.big{font-size:2rem;color:var(--forest-d)}
 .msub{font-size:11px;color:var(--ink3)}
 
-/* ── GVV HIGHLIGHT ── */
+/* ── VGV HIGHLIGHT ── */
 .gvv-card{background:linear-gradient(135deg,var(--forest-d),var(--forest));color:#fff;border-radius:12px;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap;box-shadow:0 4px 24px rgba(45,90,27,.3)}
 .gvv-main .gv{font-size:2.8rem;font-weight:800;line-height:1;color:#fff}
 .gvv-main .gl{font-size:12px;color:rgba(255,255,255,.6);letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
@@ -514,7 +514,7 @@ table.main tbody tr:hover td{background:var(--forest-xl)}
       <a href="#" class="active" onclick="showPage('visao-geral',this);closeMobile()">Visão Geral</a>
       <a href="#" onclick="showPage('por-quadra',this);closeMobile()">Por Quadra</a>
       <a href="#" onclick="showPage('todos-lotes',this);closeMobile()">Lotes</a>
-      <a href="#" onclick="showPage('gvv',this);closeMobile()">GVV</a>
+      <a href="#" onclick="showPage('gvv',this);closeMobile()">VGV</a>
     </div>
     <button class="nav-hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobile()">
       <span></span><span></span><span></span>
@@ -525,7 +525,7 @@ table.main tbody tr:hover td{background:var(--forest-xl)}
     <a href="#" class="active" onclick="showPage('visao-geral',this);closeMobile()">Visão Geral</a>
     <a href="#" onclick="showPage('por-quadra',this);closeMobile()">Por Quadra</a>
     <a href="#" onclick="showPage('todos-lotes',this);closeMobile()">Lotes</a>
-    <a href="#" onclick="showPage('gvv',this);closeMobile()">GVV</a>
+    <a href="#" onclick="showPage('gvv',this);closeMobile()">VGV</a>
   </div>
 </nav>
 
@@ -539,7 +539,7 @@ table.main tbody tr:hover td{background:var(--forest-xl)}
     <div class="hero-kpis" id="hero-kpis">
       <div class="hero-kpi"><div class="kv">123</div><div class="kl">Lotes disponíveis</div></div>
       <div class="hero-kpi"><div class="kv">11</div><div class="kl">Quadras ativas</div></div>
-      <div class="hero-kpi"><div class="kv">R$ 8,38 M</div><div class="kl">GVV Total</div></div>
+      <div class="hero-kpi"><div class="kv">R$ 8,38 M</div><div class="kl">VGV Total</div></div>
       <div class="hero-kpi outlier-kpi" onclick="openOutlierModal()" title="Ver detalhes do ponto fora da curva" style="cursor:pointer">
         <div class="kv">1 ⚑</div><div class="kl">Ponto fora da curva</div>
       </div>
@@ -558,7 +558,8 @@ table.main tbody tr:hover td{background:var(--forest-xl)}
   <div class="gvv-card">
     <div class="gvv-main">
       <div class="gv" id="gvv-total">R$ 8.377.406</div>
-      <div class="gl">GVV — Geral de Vendas a Verificar · 123 lotes</div>
+      <div class="gl">VGV — Valor Geral de Vendas · 123 lotes</div>
+      <div style="margin-top:6px;font-size:12px;color:rgba(255,255,255,0.65)">Anterior: R$ 8.115.278,00 &nbsp;·&nbsp; <span style="color:#a8e6a0;font-weight:600">▲ +3,23% após reajuste</span></div>
     </div>
     <div class="gvv-stats">
       <div class="gvv-stat"><div class="sv">R$ 51.200</div><div class="sl">Menor lote</div></div>
@@ -617,7 +618,7 @@ table.main tbody tr:hover td{background:var(--forest-xl)}
     <div class="section-head"><div class="sh-dot"></div><h2>Visualização</h2></div>
     <div class="chart-row">
       <div class="chart-card">
-        <div class="chart-title">GVV por quadra</div>
+        <div class="chart-title">VGV por quadra</div>
         <div class="chart-sub">Soma dos valores disponíveis em R$</div>
         <div id="chart-gvv-quadra"></div>
       </div>
@@ -672,35 +673,36 @@ table.main tbody tr:hover td{background:var(--forest-xl)}
   </div>
 </div>
 
-<!-- ═══════════════════ GVV ═══════════════════ -->
+<!-- ═══════════════════ VGV ═══════════════════ -->
 <div id="pg-gvv" class="page-section">
   <div style="margin-top:1.5rem">
   <div class="gvv-card" style="margin-bottom:2rem">
     <div class="gvv-main">
       <div class="gv">R$ 8.377.406</div>
-      <div class="gl">GVV Total · Geral de Vendas a Verificar · 123 lotes</div>
+      <div class="gl">VGV Total · Valor Geral de Vendas · 123 lotes</div>
+      <div style="margin-top:8px;font-size:12px;color:rgba(255,255,255,0.65)">Anterior: <strong style="color:rgba(255,255,255,0.85)">R$ 8.115.278,00</strong> &nbsp;·&nbsp; <span style="color:#a8e6a0;font-weight:700">▲ +3,23% após reajuste</span> &nbsp;·&nbsp; <span style="color:rgba(255,255,255,0.75)">Impacto: +R$ 262.127,63</span></div>
     </div>
   </div>
   <div class="section">
-    <div class="section-head"><div class="sh-dot"></div><h2>GVV por Quadra</h2></div>
+    <div class="section-head"><div class="sh-dot"></div><h2>VGV por Quadra</h2></div>
     <div class="mgrid mgrid-4" id="gvv-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))"></div>
   </div>
   <div class="section">
-    <div class="section-head"><div class="sh-dot"></div><h2>Participação no GVV</h2></div>
+    <div class="section-head"><div class="sh-dot"></div><h2>Participação no VGV</h2></div>
     <div class="chart-card">
-      <div class="chart-title">Contribuição de cada quadra para o GVV total</div>
+      <div class="chart-title">Contribuição de cada quadra para o VGV total</div>
       <div class="chart-sub">Em percentual do valor total disponível</div>
       <div id="chart-gvv-pct"></div>
     </div>
   </div>
   <div class="section">
-    <div class="section-head"><div class="sh-dot"></div><h2>Análise de ticket médio vs GVV</h2></div>
+    <div class="section-head"><div class="sh-dot"></div><h2>Análise de ticket médio vs VGV</h2></div>
     <div class="tcard">
       <div class="thead-row"><h3>Comparativo por quadra</h3><span class="tr-meta">11 quadras</span></div>
       <div class="t-wrap">
         <table class="main" id="gvv-table">
           <thead><tr>
-            <th>Quadra</th><th>Lotes</th><th>GVV</th><th>% do GVV</th><th>Ticket mín.</th><th>Ticket médio</th><th>Ticket máx.</th><th>Área média</th>
+            <th>Quadra</th><th>Lotes</th><th>VGV Atual</th><th>VGV Anterior</th><th>Variação</th><th>% do VGV</th><th>Ticket mín.</th><th>Ticket médio</th><th>Ticket máx.</th><th>Área média</th>
           </tr></thead>
           <tbody id="gvv-tbody"></tbody>
         </table>
@@ -737,6 +739,16 @@ table.main tbody tr:hover td{background:var(--forest-xl)}
 <script>
 // ── DATA ──────────────────────────────────────────────────────────────────────
 const D = {"total_lotes": 123, "gvv": 8377405.62512, "preco_min": 51200.0, "preco_med": 68108.98882211382, "preco_max": 147240.0, "m2_min": 160.0, "m2_med": 193.38252032520327, "m2_max": 490.8, "vlm2_min": 300.0, "vlm2_med": 354.49659170469346, "vlm2_max": 378.453792875, "outliers": [{"quadra": "QD-17", "lote": 2, "m2": 153.2, "vl_m2": 320.0, "preco": 49024.0}], "por_quadra": [{"quadra": "QD-10", "qtd": 4, "preco_min": 51200.0, "preco_med": 57930.0, "preco_max": 78120.0, "m2_total": 732.0, "gvv": 231720.0, "m2_med": 183.0, "vlm2_min": 310.0, "vlm2_med": 317.5, "vlm2_max": 320.0}, {"quadra": "QD-11", "qtd": 7, "preco_min": 51200.0, "preco_med": 58891.43, "preco_max": 78120.0, "m2_total": 1304.0, "gvv": 412240.0, "m2_med": 186.29, "vlm2_min": 310.0, "vlm2_med": 317.14, "vlm2_max": 320.0}, {"quadra": "QD-12", "qtd": 12, "preco_min": 60552.61, "preco_med": 80628.52, "preco_max": 130204.55, "m2_total": 2584.63, "gvv": 967542.19, "m2_med": 215.39, "vlm2_min": 365.23, "vlm2_med": 375.15, "vlm2_max": 378.45}, {"quadra": "QD-14", "qtd": 19, "preco_min": 58436.82, "preco_med": 63829.76, "preco_max": 87655.24, "m2_total": 3280.0, "gvv": 1212765.38, "m2_med": 172.63, "vlm2_min": 365.23, "vlm2_med": 370.1, "vlm2_max": 378.45}, {"quadra": "QD-15", "qtd": 6, "preco_min": 51200.0, "preco_med": 82786.67, "preco_max": 147240.0, "m2_total": 1618.4, "gvv": 496720.0, "m2_med": 269.73, "vlm2_min": 300.0, "vlm2_med": 310.0, "vlm2_max": 320.0}, {"quadra": "QD-17", "qtd": 6, "preco_min": 51200.0, "preco_med": 73931.38, "preco_max": 102675.0, "m2_total": 1440.47, "gvv": 443588.3, "m2_med": 240.08, "vlm2_min": 300.0, "vlm2_med": 310.0, "vlm2_max": 320.0}, {"quadra": "QD-18", "qtd": 19, "preco_min": 59313.38, "preco_med": 77211.11, "preco_max": 116544.94, "m2_total": 3966.15, "gvv": 1467011.15, "m2_med": 208.74, "vlm2_min": 365.23, "vlm2_med": 370.8, "vlm2_max": 378.45}, {"quadra": "QD-19", "qtd": 38, "preco_min": 58436.82, "preco_med": 64047.17, "preco_max": 144813.76, "m2_total": 6600.0, "gvv": 2433792.61, "m2_med": 173.68, "vlm2_min": 365.23, "vlm2_med": 369.06, "vlm2_max": 378.45}, {"quadra": "QD-25", "qtd": 4, "preco_min": 51200.0, "preco_med": 52406.5, "preco_max": 55314.0, "m2_total": 660.4, "gvv": 209626.0, "m2_med": 165.1, "vlm2_min": 315.0, "vlm2_med": 317.5, "vlm2_max": 320.0}, {"quadra": "QD-28", "qtd": 4, "preco_min": 51200.0, "preco_med": 62800.0, "preco_max": 74400.0, "m2_total": 800.0, "gvv": 251200.0, "m2_med": 200.0, "vlm2_min": 310.0, "vlm2_med": 315.0, "vlm2_max": 320.0}, {"quadra": "QD-29", "qtd": 4, "preco_min": 51200.0, "preco_med": 62800.0, "preco_max": 74400.0, "m2_total": 800.0, "gvv": 251200.0, "m2_med": 200.0, "vlm2_min": 310.0, "vlm2_med": 315.0, "vlm2_max": 320.0}], "lotes": [{"quadra": "QD-10", "lote": 1, "m2": 252.0, "vl_m2": 310.0, "preco": 78120.0, "entrada": 7812.0}, {"quadra": "QD-10", "lote": 21, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-10", "lote": 23, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-10", "lote": 33, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-11", "lote": 1, "m2": 252.0, "vl_m2": 310.0, "preco": 78120.0, "entrada": 7812.0}, {"quadra": "QD-11", "lote": 4, "m2": 252.0, "vl_m2": 310.0, "preco": 78120.0, "entrada": 7812.0}, {"quadra": "QD-11", "lote": 37, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-11", "lote": 38, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-11", "lote": 42, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-11", "lote": 44, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-11", "lote": 47, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-12", "lote": 1, "m2": 268.0, "vl_m2": 378.45, "preco": 101425.62, "entrada": 10142.56}, {"quadra": "QD-12", "lote": 2, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-12", "lote": 3, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-12", "lote": 4, "m2": 213.96, "vl_m2": 378.45, "preco": 80973.97, "entrada": 8097.4}, {"quadra": "QD-12", "lote": 5, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-12", "lote": 6, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-12", "lote": 7, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-12", "lote": 8, "m2": 339.5, "vl_m2": 378.45, "preco": 128485.05, "entrada": 12848.51}, {"quadra": "QD-12", "lote": 11, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-12", "lote": 12, "m2": 240.0, "vl_m2": 365.23, "preco": 87655.24, "entrada": 8765.52}, {"quadra": "QD-12", "lote": 13, "m2": 356.5, "vl_m2": 365.23, "preco": 130204.55, "entrada": 13020.46}, {"quadra": "QD-12", "lote": 14, "m2": 206.67, "vl_m2": 365.23, "preco": 75482.12, "entrada": 7548.21}, {"quadra": "QD-14", "lote": 1, "m2": 240.0, "vl_m2": 365.23, "preco": 87655.24, "entrada": 8765.52}, {"quadra": "QD-14", "lote": 2, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-14", "lote": 3, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-14", "lote": 4, "m2": 240.0, "vl_m2": 365.23, "preco": 87655.24, "entrada": 8765.52}, {"quadra": "QD-14", "lote": 5, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-14", "lote": 6, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-14", "lote": 7, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-14", "lote": 8, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-14", "lote": 14, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-14", "lote": 15, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-14", "lote": 16, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-14", "lote": 17, "m2": 240.0, "vl_m2": 365.23, "preco": 87655.24, "entrada": 8765.52}, {"quadra": "QD-14", "lote": 18, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-14", "lote": 21, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-14", "lote": 22, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-14", "lote": 23, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-14", "lote": 28, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-14", "lote": 29, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-14", "lote": 30, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-15", "lote": 1, "m2": 240.0, "vl_m2": 310.0, "preco": 74400.0, "entrada": 7440.0}, {"quadra": "QD-15", "lote": 2, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-15", "lote": 3, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-15", "lote": 4, "m2": 240.0, "vl_m2": 310.0, "preco": 74400.0, "entrada": 7440.0}, {"quadra": "QD-15", "lote": 19, "m2": 327.6, "vl_m2": 300.0, "preco": 98280.0, "entrada": 9828.0}, {"quadra": "QD-15", "lote": 20, "m2": 490.8, "vl_m2": 300.0, "preco": 147240.0, "entrada": 14724.0}, {"quadra": "QD-17", "lote": 1, "m2": 184.42, "vl_m2": 315.0, "preco": 58092.3, "entrada": 5809.23}, {"quadra": "QD-17", "lote": 3, "m2": 171.2, "vl_m2": 315.0, "preco": 53928.0, "entrada": 5392.8}, {"quadra": "QD-17", "lote": 4, "m2": 278.1, "vl_m2": 305.0, "preco": 84820.5, "entrada": 8482.05}, {"quadra": "QD-17", "lote": 11, "m2": 304.5, "vl_m2": 305.0, "preco": 92872.5, "entrada": 9287.25}, {"quadra": "QD-17", "lote": 12, "m2": 342.25, "vl_m2": 300.0, "preco": 102675.0, "entrada": 10267.5}, {"quadra": "QD-17", "lote": 18, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-18", "lote": 1, "m2": 248.4, "vl_m2": 365.23, "preco": 90723.17, "entrada": 9072.32}, {"quadra": "QD-18", "lote": 2, "m2": 164.4, "vl_m2": 365.23, "preco": 60043.84, "entrada": 6004.38}, {"quadra": "QD-18", "lote": 3, "m2": 163.4, "vl_m2": 365.23, "preco": 59678.61, "entrada": 5967.86}, {"quadra": "QD-18", "lote": 4, "m2": 162.4, "vl_m2": 365.23, "preco": 59313.38, "entrada": 5931.34}, {"quadra": "QD-18", "lote": 5, "m2": 314.95, "vl_m2": 365.23, "preco": 115029.23, "entrada": 11502.92}, {"quadra": "QD-18", "lote": 6, "m2": 252.8, "vl_m2": 365.23, "preco": 92330.18, "entrada": 9233.02}, {"quadra": "QD-18", "lote": 7, "m2": 251.8, "vl_m2": 365.23, "preco": 91964.95, "entrada": 9196.5}, {"quadra": "QD-18", "lote": 8, "m2": 247.6, "vl_m2": 365.23, "preco": 90430.98, "entrada": 9043.1}, {"quadra": "QD-18", "lote": 9, "m2": 235.0, "vl_m2": 365.23, "preco": 85829.09, "entrada": 8582.91}, {"quadra": "QD-18", "lote": 10, "m2": 210.8, "vl_m2": 365.23, "preco": 76990.52, "entrada": 7699.05}, {"quadra": "QD-18", "lote": 11, "m2": 319.1, "vl_m2": 365.23, "preco": 116544.94, "entrada": 11654.49}, {"quadra": "QD-18", "lote": 12, "m2": 275.5, "vl_m2": 378.45, "preco": 104264.01, "entrada": 10426.4}, {"quadra": "QD-18", "lote": 13, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-18", "lote": 14, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-18", "lote": 15, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-18", "lote": 16, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-18", "lote": 17, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-18", "lote": 18, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-18", "lote": 19, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 1, "m2": 246.0, "vl_m2": 365.23, "preco": 89846.62, "entrada": 8984.66}, {"quadra": "QD-19", "lote": 2, "m2": 162.8, "vl_m2": 365.23, "preco": 59459.48, "entrada": 5945.95}, {"quadra": "QD-19", "lote": 3, "m2": 162.0, "vl_m2": 365.23, "preco": 59167.28, "entrada": 5916.73}, {"quadra": "QD-19", "lote": 4, "m2": 241.2, "vl_m2": 365.23, "preco": 88093.51, "entrada": 8809.35}, {"quadra": "QD-19", "lote": 5, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-19", "lote": 6, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-19", "lote": 7, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-19", "lote": 8, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-19", "lote": 9, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-19", "lote": 10, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-19", "lote": 11, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-19", "lote": 12, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-19", "lote": 13, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68}, {"quadra": "QD-19", "lote": 14, "m2": 224.7, "vl_m2": 365.23, "preco": 82067.21, "entrada": 8206.72}, {"quadra": "QD-19", "lote": 15, "m2": 206.8, "vl_m2": 365.23, "preco": 75529.59, "entrada": 7552.96}, {"quadra": "QD-19", "lote": 16, "m2": 396.5, "vl_m2": 365.23, "preco": 144813.76, "entrada": 14481.38}, {"quadra": "QD-19", "lote": 17, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 18, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 19, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 20, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 21, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 22, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 23, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 24, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 25, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 26, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-19", "lote": 27, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26}, {"quadra": "QD-25", "lote": 15, "m2": 175.6, "vl_m2": 315.0, "preco": 55314.0, "entrada": 5531.4}, {"quadra": "QD-25", "lote": 16, "m2": 164.8, "vl_m2": 315.0, "preco": 51912.0, "entrada": 5191.2}, {"quadra": "QD-25", "lote": 17, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-25", "lote": 20, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-28", "lote": 1, "m2": 240.0, "vl_m2": 310.0, "preco": 74400.0, "entrada": 7440.0}, {"quadra": "QD-28", "lote": 2, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-28", "lote": 3, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-28", "lote": 4, "m2": 240.0, "vl_m2": 310.0, "preco": 74400.0, "entrada": 7440.0}, {"quadra": "QD-29", "lote": 1, "m2": 240.0, "vl_m2": 310.0, "preco": 74400.0, "entrada": 7440.0}, {"quadra": "QD-29", "lote": 2, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-29", "lote": 3, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0}, {"quadra": "QD-29", "lote": 4, "m2": 240.0, "vl_m2": 310.0, "preco": 74400.0, "entrada": 7440.0}]};
+
+// ── VGV ANTERIOR (antes do reajuste) ─────────────────────────────────────────
+const VGV_ANT_TOTAL = 8115278; // VGV anterior total (proporção dos lotes disponíveis)
+const VGV_ANT_QD = {
+  "QD-10": 227918, "QD-11": 400376, "QD-12": 936090,
+  "QD-14": 1173341, "QD-15": 480573, "QD-17": 429168,
+  "QD-18": 1419322, "QD-19": 2354676, "QD-25": 204964,
+  "QD-28": 243034, "QD-29": 243034
+};
+const VGV_TOTAL_PCT = ((D.gvv / VGV_ANT_TOTAL - 1) * 100).toFixed(2); // +3.23%
 
 const QD_COLORS = [
   '#2d5a1b','#3a7022','#4a8a2e','#1e3d12','#5a9e3a','#234a18',
@@ -831,7 +843,8 @@ D.por_quadra.forEach((q,i)=>{
         </div>
         <div class="qcard-gvv">
           <div class="gv">${fmtM(q.gvv)}</div>
-          <div class="gl">GVV (${pct}% do total)</div>
+          <div class="gl">VGV (${pct}% do total)</div>
+          ${VGV_ANT_QD[q.quadra] ? `<div style="font-size:10px;color:var(--forest);margin-top:3px">Ant.: ${fmtM(VGV_ANT_QD[q.quadra])} &nbsp;<span style="color:#2a7a20;font-weight:600">▲ +${((q.gvv/VGV_ANT_QD[q.quadra]-1)*100).toFixed(2)}%</span></div>` : ''}
         </div>
         <div class="qcard-m2row">
           <span>R$/m²: <span>${Math.round(q.vlm2_min)} – ${Math.round(q.vlm2_max)}</span></span>
@@ -845,17 +858,22 @@ D.por_quadra.forEach((q,i)=>{
     </div>`;
 });
 
-// ── GVV PAGE ──
+// ── VGV PAGE ──
 const gvvGrid = document.getElementById('gvv-grid');
 const gvvSorted = [...D.por_quadra].sort((a,b)=>b.gvv-a.gvv);
 gvvSorted.forEach((q,i)=>{
   const pct=(q.gvv/totalGvv*100).toFixed(1);
   const col=QD_COLORS[i%QD_COLORS.length];
+  const antVgv = VGV_ANT_QD[q.quadra] || 0;
+  const diffPct = antVgv > 0 ? ((q.gvv/antVgv - 1)*100).toFixed(2) : null;
+  const diffVal = antVgv > 0 ? Math.round(q.gvv - antVgv) : 0;
+  const antLabel = antVgv > 0 ? `<div style="margin-top:5px;font-size:10.5px;color:#777">Anterior: ${fmtM(antVgv)}</div><div style="font-size:10.5px;color:#2d7a1b;font-weight:600">▲ +${diffPct}% &nbsp;(+${fmtM(diffVal)})</div>` : '';
   gvvGrid.innerHTML+=`
     <div class="mcard" style="border-top:3px solid ${col}">
       <div class="mrole" style="color:${col}">${q.quadra}</div>
       <div class="mval" style="font-size:1.1rem;color:var(--forest-d)">${fmtM(q.gvv)}</div>
-      <div class="msub">${q.qtd} lotes · ${pct}% do GVV</div>
+      <div class="msub">${q.qtd} lotes · ${pct}% do VGV</div>
+      ${antLabel}
     </div>`;
 });
 
@@ -864,10 +882,16 @@ svgBar('chart-gvv-pct', gvvSorted, QD_COLORS, d=>d.quadra, d=>d.gvv/totalGvv*100
 const gvvTbody=document.getElementById('gvv-tbody');
 gvvSorted.forEach(q=>{
   const pct=(q.gvv/totalGvv*100).toFixed(1);
+  const antVgv = VGV_ANT_QD[q.quadra] || 0;
+  const varPct = antVgv > 0 ? ((q.gvv/antVgv-1)*100).toFixed(2) : '-';
+  const varColor = parseFloat(varPct) > 0 ? 'color:#1a7a20;font-weight:600' : '';
+  const antFmt = antVgv > 0 ? fmtM(antVgv) : '-';
   gvvTbody.innerHTML+=`<tr>
     <td><span class="td-qd">${q.quadra}</span></td>
     <td>${q.qtd}</td>
     <td style="font-weight:600;color:var(--forest-d)">${fmtM(q.gvv)}</td>
+    <td style="color:#555">${antFmt}</td>
+    <td style="${varColor}">▲ +${varPct}%</td>
     <td>${pct}%</td>
     <td class="td-val-min">${fmt(q.preco_min)}</td>
     <td>${fmt(q.preco_med)}</td>
@@ -949,7 +973,7 @@ const heroConfig = {
     mini: [
       {v:'11', l:'Quadras ativas'},
       {v:'123', l:'Lotes disponíveis'},
-      {v:'R$ 8,38 M', l:'GVV Total'}
+      {v:'R$ 8,38 M', l:'VGV Total'}
     ]
   },
   'todos-lotes': {
@@ -963,10 +987,10 @@ const heroConfig = {
     ]
   },
   'gvv': {
-    title: '<strong>Quintas da Mata</strong> · GVV',
+    title: '<strong>Quintas da Mata</strong> · VGV',
     compact: true,
     mini: [
-      {v:'R$ 8,38 M', l:'GVV Total'},
+      {v:'R$ 8,38 M', l:'VGV Total'},
       {v:'11', l:'Quadras'},
       {v:'R$ 68.109', l:'Ticket médio'}
     ]
