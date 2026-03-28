@@ -455,19 +455,29 @@ table.main tbody tr:hover td{background:var(--forest-xl)}
   font-size: 9px; font-weight: 700; letter-spacing: .14em;
   text-transform: uppercase; color: var(--ink3); margin-bottom: .6rem;
 }
-.lp-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.lp-table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
 .lp-table thead th {
-  font-size: 9px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
-  color: var(--ink3); padding: 4px 8px; text-align: left;
-  border-bottom: 1px solid var(--paper3); white-space: nowrap;
+  font-size: 9px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ink3); padding: 4px 6px; text-align: left;
+  border-bottom: 1px solid var(--paper3); white-space: nowrap; overflow: hidden;
 }
 .lp-table thead th:not(:first-child) { text-align: right; }
 .lp-table tbody td {
-  padding: 6px 8px; color: var(--ink2);
+  padding: 5px 6px; color: var(--ink2);
   border-bottom: .5px solid var(--paper2); vertical-align: middle;
+  word-break: break-word;
 }
 .lp-table tbody tr:last-child td { border-bottom: none; }
 .lp-table tbody td:not(:first-child) { text-align: right; }
+/* Fixed column widths: Plano flex, Prazo narrow, Parcela fixed */
+.lp-table thead th:nth-child(1),
+.lp-table tbody td:nth-child(1) { width: auto; }
+.lp-table thead th:nth-child(2),
+.lp-table tbody td.lp-td-prazo { width: 38px; text-align: right; white-space: nowrap; }
+.lp-table thead th:nth-child(3),
+.lp-table tbody td.lp-td-val { width: 100px; white-space: nowrap; }
+.lp-mensal-val { white-space: nowrap; }
+.lp-intercalada-sub { white-space: nowrap; font-size: 9px; color: var(--gold); display: block; margin-top: 1px; }
 .lp-plan-name { font-weight: 600; color: var(--forest-d); white-space: nowrap; }
 .lp-intercalada-sub {
   display: block; font-size: 9px; color: var(--gold);
@@ -1094,11 +1104,10 @@ document.addEventListener('click', e=>{
       const interSub = hasInter
         ? `<span class="lp-intercalada-sub">+ ${brl(p.intercalada)} · ${p.qtd_intercaladas}x intercaladas/ano</span>`
         : '';
-      const bestBadge = isBest ? `<span class="lp-best-badge">menor parcela</span>` : '';
       return `<tr class="${isBest ? 'lp-best' : ''}">
-        <td><span class="lp-plan-name">${p.label}${bestBadge}</span></td>
-        <td>${p.meses}x</td>
-        <td><span class="lp-mensal-val">${brl(p.mensal)}</span>${interSub}</td>
+        <td><span class="lp-plan-name">${p.label}</span></td>
+        <td class="lp-td-prazo">${p.meses}x</td>
+        <td class="lp-td-val"><span class="lp-mensal-val">${brl(p.mensal)}</span>${interSub}</td>
       </tr>`;
     }).join('');
 
