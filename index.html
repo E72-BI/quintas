@@ -1089,7 +1089,7 @@ document.addEventListener('click', e=>{
   popup.innerHTML = '<div class="lp-card" id="lp-card"></div>';
   document.body.appendChild(popup);
 
-  const brl = v => 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+  const brl = v => 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
 
   function buildPopupHtml(data) {
     const planos = [
