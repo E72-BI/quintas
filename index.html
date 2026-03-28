@@ -172,9 +172,11 @@ table.main{width:100%;border-collapse:collapse;font-size:13px}
 table.main thead th{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);padding:8px 12px;text-align:left;border-bottom:.5px solid var(--border);background:var(--paper);white-space:nowrap;cursor:pointer;user-select:none}
 table.main thead th:hover{color:var(--forest)}
 table.main thead th:not(:first-child){text-align:right}
+table.main thead th.th-info{text-align:center !important}
 table.main tbody td{padding:9px 12px;color:var(--ink);border-bottom:.5px solid var(--border)}
 table.main tbody tr:last-child td{border-bottom:none}
 table.main tbody td:not(:first-child){text-align:right}
+table.main tbody td.td-info{text-align:center}
 table.main tbody tr:hover td{background:var(--forest-xl)}
 .td-qd{font-size:11px;font-weight:600;color:var(--forest);background:var(--forest-xl);padding:2px 7px;border-radius:10px;display:inline-block}
 .td-val-min{color:var(--forest)}
@@ -257,6 +259,237 @@ table.main tbody tr:hover td{background:var(--forest-xl)}
 .parallax-divider .pdiv-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px}
 .parallax-divider .pdiv-label{font-size:1.1rem;font-weight:700;color:#fff;letter-spacing:.12em;text-transform:uppercase;text-shadow:0 2px 12px rgba(0,0,0,.4)}
 .parallax-divider .pdiv-sub{font-size:11px;color:rgba(255,255,255,.6);letter-spacing:.08em}
+
+
+/* Info column */
+.th-info {
+  width: 44px;
+  text-align: center !important;
+  cursor: default !important;
+  color: var(--ink3);
+  font-size: 9px;
+  letter-spacing: .06em;
+  user-select: none;
+}
+.td-info {
+  width: 44px;
+  text-align: center !important;
+  padding: 0 4px !important;
+  vertical-align: middle;
+}
+/* ── LOTE INFO ICON ── */
+.lote-info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--forest-xl);
+  border: 1.5px solid var(--forest-l);
+  color: var(--forest);
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+  margin-left: 6px;
+  transition: background .15s, border-color .15s, transform .15s;
+  vertical-align: middle;
+  line-height: 1;
+  flex-shrink: 0;
+  font-style: italic;
+  font-family: Georgia, serif;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.lote-info-btn:hover {
+  background: var(--forest);
+  color: #fff;
+  border-color: var(--forest);
+  transform: scale(1.12);
+}
+.lote-info-btn:active { transform: scale(.95); }
+
+/* ── LOTE POPUP / MODAL ── */
+/* Overlay (mobile) */
+.lp-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 8900;
+  backdrop-filter: blur(2px);
+}
+.lp-overlay.open { display: block; }
+
+/* Popup container */
+.lote-popup {
+  position: fixed;
+  z-index: 9000;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(8px) scale(0.97);
+  transition: opacity .2s ease, transform .2s ease;
+  width: 430px;
+  max-width: calc(100vw - 24px);
+  filter: drop-shadow(0 14px 44px rgba(30,61,18,.24)) drop-shadow(0 2px 8px rgba(30,61,18,.1));
+}
+.lote-popup.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: all;
+}
+
+/* Mobile: full bottom sheet */
+@media (max-width: 768px) {
+  .lote-popup {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    transform: translateY(100%) !important;
+    filter: drop-shadow(0 -8px 32px rgba(30,61,18,.22));
+    border-radius: 0;
+    transition: opacity .25s ease, transform .28s cubic-bezier(.32,.72,0,1);
+  }
+  .lote-popup.visible {
+    transform: translateY(0) !important;
+    opacity: 1;
+  }
+}
+
+/* Popup card */
+.lp-card {
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(45,90,27,.12);
+  position: relative;
+}
+@media (max-width: 768px) {
+  .lp-card { border-radius: 18px 18px 0 0; }
+}
+
+/* Arrow (desktop only) */
+.lp-arrow {
+  position: absolute;
+  width: 10px; height: 10px;
+  background: var(--forest-d);
+  transform: rotate(45deg);
+  top: -5px;
+  border-radius: 1px;
+  z-index: 1;
+}
+
+/* Close button */
+.lp-close {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.25);
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, transform .15s;
+  z-index: 2;
+  line-height: 1;
+}
+.lp-close:hover { background: rgba(255,255,255,.32); transform: scale(1.08); }
+.lp-close:active { transform: scale(.92); }
+
+/* Mobile drag handle */
+.lp-handle {
+  display: none;
+  width: 36px; height: 4px;
+  border-radius: 2px;
+  background: rgba(45,90,27,.2);
+  margin: 0 auto;
+  position: absolute;
+  top: 8px; left: 50%; transform: translateX(-50%);
+}
+@media (max-width: 768px) { .lp-handle { display: block; } }
+
+/* Header */
+.lp-header {
+  background: linear-gradient(135deg, var(--forest-d) 0%, var(--forest) 100%);
+  padding: 1rem 1.2rem .85rem;
+  position: relative;
+}
+@media (max-width: 768px) { .lp-header { padding-top: 1.4rem; } }
+.lp-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.lp-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--gold-l);
+  background: rgba(200,168,75,.18); border: 1px solid rgba(200,168,75,.3);
+  border-radius: 20px; padding: 2px 9px; margin-bottom: 5px; display: inline-block;
+}
+.lp-title { font-size: 1.15rem; font-weight: 700; color: #fff; line-height: 1.1; }
+.lp-subtitle { font-size: 11px; color: rgba(255,255,255,.55); margin-top: 2px; }
+.lp-preco-block { text-align: right; flex-shrink: 0; }
+.lp-preco-label { font-size: 9px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.45); margin-bottom: 1px; }
+.lp-preco { font-size: 1.3rem; font-weight: 800; color: #fff; line-height: 1; }
+.lp-entrada-row {
+  display: flex; align-items: center; gap: 6px; margin-top: .65rem;
+  background: rgba(255,255,255,.08); border-radius: 8px; padding: .45rem .8rem;
+}
+.lp-entrada-icon {
+  width: 22px; height: 22px; background: var(--gold-l); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  font-size: 8px; color: var(--forest-d); font-weight: 900;
+}
+.lp-entrada-text { font-size: 12px; color: rgba(255,255,255,.7); }
+.lp-entrada-val { font-size: 13px; font-weight: 700; color: var(--gold-l); margin-left: auto; }
+
+/* Body */
+.lp-body { padding: .9rem 1.1rem 1rem; }
+.lp-section-label {
+  font-size: 9px; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--ink3); margin-bottom: .6rem;
+}
+.lp-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.lp-table thead th {
+  font-size: 9px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ink3); padding: 4px 8px; text-align: left;
+  border-bottom: 1px solid var(--paper3); white-space: nowrap;
+}
+.lp-table thead th:not(:first-child) { text-align: right; }
+.lp-table tbody td {
+  padding: 6px 8px; color: var(--ink2);
+  border-bottom: .5px solid var(--paper2); vertical-align: middle;
+}
+.lp-table tbody tr:last-child td { border-bottom: none; }
+.lp-table tbody td:not(:first-child) { text-align: right; }
+.lp-plan-name { font-weight: 600; color: var(--forest-d); white-space: nowrap; }
+.lp-intercalada-sub {
+  display: block; font-size: 9px; color: var(--gold);
+  margin-top: 1px; white-space: nowrap;
+}
+.lp-mensal-val { font-weight: 700; color: var(--ink); white-space: nowrap; }
+.lp-table tbody tr.lp-best td { background: var(--forest-xl); }
+.lp-table tbody tr.lp-best .lp-plan-name { color: var(--forest-d); }
+.lp-table tbody tr.lp-best .lp-mensal-val { color: var(--forest-d); }
+.lp-best-badge {
+  font-size: 8px; background: var(--forest); color: #fff;
+  border-radius: 3px; padding: 1px 5px; margin-left: 4px;
+  font-weight: 700; vertical-align: middle; letter-spacing: .03em;
+}
+/* Footer */
+.lp-footer {
+  background: var(--paper); padding: .55rem 1.1rem;
+  border-top: 1px solid var(--paper2);
+  display: flex; align-items: center; gap: 6px;
+}
+.lp-footer-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--forest-l); flex-shrink: 0; }
+.lp-footer-text { font-size: 10px; color: var(--ink3); line-height: 1.4; }
 
 </style>
 </head>
@@ -415,6 +648,7 @@ table.main tbody tr:hover td{background:var(--forest-xl)}
           <thead><tr>
             <th onclick="sortTable('quadra')">Quadra ↕</th>
             <th onclick="sortTable('lote')">Lote ↕</th>
+            <th class="th-info">Info.</th>
             <th onclick="sortTable('m2')">Área (m²) ↕</th>
             <th onclick="sortTable('vl_m2')">R$/m² ↕</th>
             <th onclick="sortTable('preco')">Valor final ↕</th>
@@ -644,6 +878,10 @@ const qfb=document.getElementById('quadra-filter-btns');
   qfb.innerHTML+=`<button class="filter-btn" onclick="filterQuadra('${qd}',this)">${qd}</button>`;
 });
 
+// ── LOTES PLANOS DATA (quadra+lote keyed) ────────────────────────────────
+const LOTES_PLANOS = {"QD-10_1": {"quadra": "QD-10", "lote": 1, "m2": 252.0, "vl_m2": 310.0, "preco": 78120.0, "entrada": 7812.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 5859.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2929.5}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1953.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1786.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1171.8}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1005.13, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-10_21": {"quadra": "QD-10", "lote": 21, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 3840.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 1920.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1280.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1113.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 768.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 601.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-10_23": {"quadra": "QD-10", "lote": 23, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 3840.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 1920.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1280.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1113.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 768.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 601.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-10_33": {"quadra": "QD-10", "lote": 33, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 3840.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 1920.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1280.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1113.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 768.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 601.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-11_1": {"quadra": "QD-11", "lote": 1, "m2": 252.0, "vl_m2": 310.0, "preco": 78120.0, "entrada": 7812.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 5859.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2929.5}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1953.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1786.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1171.8}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1005.13, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-11_4": {"quadra": "QD-11", "lote": 4, "m2": 252.0, "vl_m2": 310.0, "preco": 78120.0, "entrada": 7812.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 5859.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2929.5}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1953.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1786.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1171.8}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1005.13, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-11_37": {"quadra": "QD-11", "lote": 37, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 3840.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 1920.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1280.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1113.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 768.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 601.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-11_38": {"quadra": "QD-11", "lote": 38, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 3840.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 1920.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1280.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1113.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 768.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 601.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-11_42": {"quadra": "QD-11", "lote": 42, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 3840.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 1920.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1280.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1113.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 768.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 601.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-11_44": {"quadra": "QD-11", "lote": 44, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 3840.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 1920.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1280.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1113.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 768.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 601.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-11_47": {"quadra": "QD-11", "lote": 47, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 3840.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 1920.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1280.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1113.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 768.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 601.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-12_1": {"quadra": "QD-12", "lote": 1, "m2": 268.0, "vl_m2": 378.45, "preco": 101425.62, "entrada": 10142.56, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 7606.92}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 3803.46}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2535.64}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 2368.97, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1521.38}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1354.72, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-12_2": {"quadra": "QD-12", "lote": 2, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-12_3": {"quadra": "QD-12", "lote": 3, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-12_4": {"quadra": "QD-12", "lote": 4, "m2": 213.96, "vl_m2": 378.45, "preco": 80973.97, "entrada": 8097.4, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 6073.05}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 3036.52}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2024.35}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1857.68, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1214.61}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1047.94, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-12_5": {"quadra": "QD-12", "lote": 5, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-12_6": {"quadra": "QD-12", "lote": 6, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-12_7": {"quadra": "QD-12", "lote": 7, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-12_8": {"quadra": "QD-12", "lote": 8, "m2": 339.5, "vl_m2": 378.45, "preco": 128485.05, "entrada": 12848.51, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 9636.38}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 4818.19}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 3212.13}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 3045.46, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1927.28}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1760.61, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-12_11": {"quadra": "QD-12", "lote": 11, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-12_12": {"quadra": "QD-12", "lote": 12, "m2": 240.0, "vl_m2": 365.23, "preco": 87655.24, "entrada": 8765.52, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 6574.14}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 3287.07}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2191.38}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 2024.71, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1314.83}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1148.16, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-12_13": {"quadra": "QD-12", "lote": 13, "m2": 356.5, "vl_m2": 365.23, "preco": 130204.55, "entrada": 13020.46, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 9765.34}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 4882.67}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 3255.11}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 3088.45, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1953.07}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1786.4, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-12_14": {"quadra": "QD-12", "lote": 14, "m2": 206.67, "vl_m2": 365.23, "preco": 75482.12, "entrada": 7548.21, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 5661.16}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2830.58}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1887.05}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1720.39, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1132.23}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 965.57, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-14_1": {"quadra": "QD-14", "lote": 1, "m2": 240.0, "vl_m2": 365.23, "preco": 87655.24, "entrada": 8765.52, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 6574.14}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 3287.07}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2191.38}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 2024.71, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1314.83}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1148.16, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-14_2": {"quadra": "QD-14", "lote": 2, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-14_3": {"quadra": "QD-14", "lote": 3, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-14_4": {"quadra": "QD-14", "lote": 4, "m2": 240.0, "vl_m2": 365.23, "preco": 87655.24, "entrada": 8765.52, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 6574.14}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 3287.07}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2191.38}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 2024.71, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1314.83}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1148.16, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-14_5": {"quadra": "QD-14", "lote": 5, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-14_6": {"quadra": "QD-14", "lote": 6, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-14_7": {"quadra": "QD-14", "lote": 7, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-14_8": {"quadra": "QD-14", "lote": 8, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-14_14": {"quadra": "QD-14", "lote": 14, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-14_15": {"quadra": "QD-14", "lote": 15, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-14_16": {"quadra": "QD-14", "lote": 16, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-14_17": {"quadra": "QD-14", "lote": 17, "m2": 240.0, "vl_m2": 365.23, "preco": 87655.24, "entrada": 8765.52, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 6574.14}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 3287.07}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2191.38}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 2024.71, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1314.83}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1148.16, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-14_18": {"quadra": "QD-14", "lote": 18, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-14_21": {"quadra": "QD-14", "lote": 21, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-14_22": {"quadra": "QD-14", "lote": 22, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-14_23": {"quadra": "QD-14", "lote": 23, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-14_28": {"quadra": "QD-14", "lote": 28, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-14_29": {"quadra": "QD-14", "lote": 29, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-14_30": {"quadra": "QD-14", "lote": 30, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-15_1": {"quadra": "QD-15", "lote": 1, "m2": 240.0, "vl_m2": 310.0, "preco": 74400.0, "entrada": 7440.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 5580.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2790.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1860.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1693.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1116.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 949.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-15_2": {"quadra": "QD-15", "lote": 2, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 3840.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 1920.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1280.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1113.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 768.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 601.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-15_3": {"quadra": "QD-15", "lote": 3, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 3840.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 1920.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1280.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1113.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 768.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 601.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-15_4": {"quadra": "QD-15", "lote": 4, "m2": 240.0, "vl_m2": 310.0, "preco": 74400.0, "entrada": 7440.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 5580.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2790.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1860.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1693.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1116.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 949.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-15_19": {"quadra": "QD-15", "lote": 19, "m2": 327.6, "vl_m2": 300.0, "preco": 98280.0, "entrada": 9828.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 7371.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 3685.5}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2457.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 2290.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1474.2}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1307.53, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-15_20": {"quadra": "QD-15", "lote": 20, "m2": 490.8, "vl_m2": 300.0, "preco": 147240.0, "entrada": 14724.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 11043.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 5521.5}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 3681.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 3514.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 2208.6}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 2041.93, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-17_1": {"quadra": "QD-17", "lote": 1, "m2": 184.42, "vl_m2": 315.0, "preco": 58092.3, "entrada": 5809.23, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4356.92}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2178.46}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1452.31}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1285.64, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 871.38}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 704.72, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-17_2": {"quadra": "QD-17", "lote": 2, "m2": 153.2, "vl_m2": 320.0, "preco": 49024.0, "entrada": 4902.4, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 3676.8}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 1838.4}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1225.6}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1058.93, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 735.36}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 568.69, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-17_3": {"quadra": "QD-17", "lote": 3, "m2": 171.2, "vl_m2": 315.0, "preco": 53928.0, "entrada": 5392.8, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4044.6}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2022.3}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1348.2}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1181.53, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 808.92}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 642.25, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-17_4": {"quadra": "QD-17", "lote": 4, "m2": 278.1, "vl_m2": 305.0, "preco": 84820.5, "entrada": 8482.05, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 6361.54}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 3180.77}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2120.51}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1953.85, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1272.31}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1105.64, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-17_11": {"quadra": "QD-17", "lote": 11, "m2": 304.5, "vl_m2": 305.0, "preco": 92872.5, "entrada": 9287.25, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 6965.44}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 3482.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2321.81}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 2155.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1393.09}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1226.42, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-17_12": {"quadra": "QD-17", "lote": 12, "m2": 342.25, "vl_m2": 300.0, "preco": 102675.0, "entrada": 10267.5, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 7700.62}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 3850.31}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2566.88}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 2400.21, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1540.12}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1373.46, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-17_18": {"quadra": "QD-17", "lote": 18, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 3840.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 1920.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1280.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1113.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 768.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 601.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-18_1": {"quadra": "QD-18", "lote": 1, "m2": 248.4, "vl_m2": 365.23, "preco": 90723.17, "entrada": 9072.32, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 6804.24}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 3402.12}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2268.08}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 2101.41, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1360.85}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1194.18, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-18_2": {"quadra": "QD-18", "lote": 2, "m2": 164.4, "vl_m2": 365.23, "preco": 60043.84, "entrada": 6004.38, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4503.29}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2251.64}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1501.1}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1334.43, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 900.66}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 733.99, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-18_3": {"quadra": "QD-18", "lote": 3, "m2": 163.4, "vl_m2": 365.23, "preco": 59678.61, "entrada": 5967.86, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4475.9}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2237.95}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1491.97}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1325.3, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 895.18}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 728.51, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-18_4": {"quadra": "QD-18", "lote": 4, "m2": 162.4, "vl_m2": 365.23, "preco": 59313.38, "entrada": 5931.34, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4448.5}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2224.25}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1482.83}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1316.17, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 889.7}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 723.03, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-18_5": {"quadra": "QD-18", "lote": 5, "m2": 314.95, "vl_m2": 365.23, "preco": 115029.23, "entrada": 11502.92, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 8627.19}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 4313.6}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2875.73}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 2709.06, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1725.44}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1558.77, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-18_6": {"quadra": "QD-18", "lote": 6, "m2": 252.8, "vl_m2": 365.23, "preco": 92330.18, "entrada": 9233.02, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 6924.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 3462.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2308.25}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 2141.59, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1384.95}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1218.29, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-18_7": {"quadra": "QD-18", "lote": 7, "m2": 251.8, "vl_m2": 365.23, "preco": 91964.95, "entrada": 9196.5, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 6897.37}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 3448.69}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2299.12}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 2132.46, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1379.47}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1212.81, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-18_8": {"quadra": "QD-18", "lote": 8, "m2": 247.6, "vl_m2": 365.23, "preco": 90430.98, "entrada": 9043.1, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 6782.32}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 3391.16}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2260.77}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 2094.11, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1356.46}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1189.8, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-18_9": {"quadra": "QD-18", "lote": 9, "m2": 235.0, "vl_m2": 365.23, "preco": 85829.09, "entrada": 8582.91, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 6437.18}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 3218.59}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2145.73}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1979.06, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1287.44}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1120.77, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-18_10": {"quadra": "QD-18", "lote": 10, "m2": 210.8, "vl_m2": 365.23, "preco": 76990.52, "entrada": 7699.05, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 5774.29}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2887.14}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1924.76}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1758.1, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1154.86}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 988.19, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-18_11": {"quadra": "QD-18", "lote": 11, "m2": 319.1, "vl_m2": 365.23, "preco": 116544.94, "entrada": 11654.49, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 8740.87}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 4370.44}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2913.62}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 2746.96, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1748.17}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1581.51, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-18_12": {"quadra": "QD-18", "lote": 12, "m2": 275.5, "vl_m2": 378.45, "preco": 104264.01, "entrada": 10426.4, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 7819.8}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 3909.9}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2606.6}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 2439.93, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1563.96}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1397.29, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-18_13": {"quadra": "QD-18", "lote": 13, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-18_14": {"quadra": "QD-18", "lote": 14, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-18_15": {"quadra": "QD-18", "lote": 15, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-18_16": {"quadra": "QD-18", "lote": 16, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-18_17": {"quadra": "QD-18", "lote": 17, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-18_18": {"quadra": "QD-18", "lote": 18, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-18_19": {"quadra": "QD-18", "lote": 19, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_1": {"quadra": "QD-19", "lote": 1, "m2": 246.0, "vl_m2": 365.23, "preco": 89846.62, "entrada": 8984.66, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 6738.5}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 3369.25}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2246.17}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 2079.5, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1347.7}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1181.03, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_2": {"quadra": "QD-19", "lote": 2, "m2": 162.8, "vl_m2": 365.23, "preco": 59459.48, "entrada": 5945.95, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4459.46}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2229.73}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1486.49}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1319.82, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 891.89}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 725.23, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_3": {"quadra": "QD-19", "lote": 3, "m2": 162.0, "vl_m2": 365.23, "preco": 59167.28, "entrada": 5916.73, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4437.55}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2218.77}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1479.18}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1312.52, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 887.51}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 720.84, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_4": {"quadra": "QD-19", "lote": 4, "m2": 241.2, "vl_m2": 365.23, "preco": 88093.51, "entrada": 8809.35, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 6607.01}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 3303.51}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 2202.34}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 2035.67, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1321.4}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 1154.74, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_5": {"quadra": "QD-19", "lote": 5, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_6": {"quadra": "QD-19", "lote": 6, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_7": {"quadra": "QD-19", "lote": 7, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_8": {"quadra": "QD-19", "lote": 8, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_9": {"quadra": "QD-19", "lote": 9, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_10": {"quadra": "QD-19", "lote": 10, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_11": {"quadra": "QD-19", "lote": 11, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_12": {"quadra": "QD-19", "lote": 12, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_13": {"quadra": "QD-19", "lote": 13, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_14": {"quadra": "QD-19", "lote": 14, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_15": {"quadra": "QD-19", "lote": 15, "m2": 160.0, "vl_m2": 365.23, "preco": 58436.82, "entrada": 5843.68, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4382.76}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2191.38}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1460.92}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1294.25, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 876.55}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 709.89, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_16": {"quadra": "QD-19", "lote": 16, "m2": 396.5, "vl_m2": 365.23, "preco": 144813.76, "entrada": 14481.38, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 10861.03}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 5430.52}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 3620.34}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 3453.68, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 2172.21}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 2005.54, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_17": {"quadra": "QD-19", "lote": 17, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_18": {"quadra": "QD-19", "lote": 18, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_19": {"quadra": "QD-19", "lote": 19, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_20": {"quadra": "QD-19", "lote": 20, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_21": {"quadra": "QD-19", "lote": 21, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_22": {"quadra": "QD-19", "lote": 22, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_23": {"quadra": "QD-19", "lote": 23, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_24": {"quadra": "QD-19", "lote": 24, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_25": {"quadra": "QD-19", "lote": 25, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_26": {"quadra": "QD-19", "lote": 26, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-19_27": {"quadra": "QD-19", "lote": 27, "m2": 160.0, "vl_m2": 378.45, "preco": 60552.61, "entrada": 6055.26, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4541.45}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2270.72}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1513.82}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1347.15, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 908.29}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 741.62, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-25_15": {"quadra": "QD-25", "lote": 15, "m2": 175.6, "vl_m2": 315.0, "preco": 55314.0, "entrada": 5531.4, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 4148.55}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2074.28}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1382.85}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1216.18, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 829.71}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 663.04, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-25_16": {"quadra": "QD-25", "lote": 16, "m2": 164.8, "vl_m2": 315.0, "preco": 51912.0, "entrada": 5191.2, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 3893.4}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 1946.7}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1297.8}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1131.13, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 778.68}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 612.01, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-25_17": {"quadra": "QD-25", "lote": 17, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 3840.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 1920.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1280.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1113.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 768.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 601.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-25_20": {"quadra": "QD-25", "lote": 20, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 3840.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 1920.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1280.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1113.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 768.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 601.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-28_1": {"quadra": "QD-28", "lote": 1, "m2": 240.0, "vl_m2": 310.0, "preco": 74400.0, "entrada": 7440.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 5580.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2790.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1860.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1693.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1116.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 949.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-28_2": {"quadra": "QD-28", "lote": 2, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 3840.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 1920.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1280.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1113.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 768.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 601.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-28_3": {"quadra": "QD-28", "lote": 3, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 3840.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 1920.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1280.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1113.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 768.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 601.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-28_4": {"quadra": "QD-28", "lote": 4, "m2": 240.0, "vl_m2": 310.0, "preco": 74400.0, "entrada": 7440.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 5580.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2790.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1860.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1693.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1116.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 949.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-29_1": {"quadra": "QD-29", "lote": 1, "m2": 240.0, "vl_m2": 310.0, "preco": 74400.0, "entrada": 7440.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 5580.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2790.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1860.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1693.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1116.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 949.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-29_2": {"quadra": "QD-29", "lote": 2, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 3840.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 1920.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1280.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1113.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 768.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 601.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-29_3": {"quadra": "QD-29", "lote": 3, "m2": 160.0, "vl_m2": 320.0, "preco": 51200.0, "entrada": 5120.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 3840.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 1920.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1280.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1113.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 768.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 601.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}, "QD-29_4": {"quadra": "QD-29", "lote": 4, "m2": 240.0, "vl_m2": 310.0, "preco": 74400.0, "entrada": 7440.0, "planos": {"p12": {"label": "Plano 12", "meses": 12, "mensal": 5580.0}, "p24": {"label": "Plano 24", "meses": 24, "mensal": 2790.0}, "p36": {"label": "Plano 36", "meses": 36, "mensal": 1860.0}, "p36i": {"label": "Plano 36 c/ Intercaladas", "meses": 36, "mensal": 1693.33, "intercalada": 2000.0, "qtd_intercaladas": 3}, "p60": {"label": "Plano 60", "meses": 60, "mensal": 1116.0}, "p60i": {"label": "Plano 60 c/ Intercaladas", "meses": 60, "mensal": 949.33, "intercalada": 2000.0, "qtd_intercaladas": 5}}}}
+;
+
 function renderLotes(){
   let data = [...allLotes];
   if(currentQd!=='ALL') data=data.filter(l=>l.quadra===currentQd);
@@ -660,9 +898,14 @@ function renderLotes(){
   data.forEach(l=>{
     const isMin=l.preco===minP;
     const isMax=l.preco===maxP;
+    const hasPlanos = !!LOTES_PLANOS[l.quadra+'_'+l.lote];
+    const infoCell = hasPlanos
+      ? `<td class="td-info"><button class="lote-info-btn" data-quadra="${l.quadra}" data-lote="${l.lote}" title="Ver condições · ${l.quadra} Lote ${l.lote}" aria-label="Condições do Lote ${l.lote}">i</button></td>`
+      : `<td class="td-info"></td>`;
     tb.innerHTML+=`<tr>
       <td><span class="td-qd">${l.quadra}</span></td>
       <td>${l.lote}</td>
+      ${infoCell}
       <td>${l.m2.toFixed(1)}</td>
       <td>R$ ${Math.round(l.vl_m2)}</td>
       <td class="${isMin?'td-val-min':isMax?'td-val-max':''}" style="${isMax?'font-weight:700':''}">${fmt(l.preco)}</td>
@@ -819,6 +1062,190 @@ document.addEventListener('click', e=>{
   const nav = document.querySelector('nav');
   if(!nav.contains(e.target)) closeMobile();
 });
+
+
+// ── POPUP SYSTEM ─────────────────────────────────────────────────────────
+(function(){
+  // Build overlay (mobile backdrop)
+  const overlay = document.createElement('div');
+  overlay.className = 'lp-overlay';
+  overlay.id = 'lp-overlay';
+  document.body.appendChild(overlay);
+
+  // Build popup
+  const popup = document.createElement('div');
+  popup.className = 'lote-popup';
+  popup.id = 'lote-popup';
+  popup.innerHTML = '<div class="lp-card" id="lp-card"></div>';
+  document.body.appendChild(popup);
+
+  const brl = v => 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+
+  function buildPopupHtml(data) {
+    const planos = [
+      data.planos.p12, data.planos.p24,
+      data.planos.p36, data.planos.p36i,
+      data.planos.p60, data.planos.p60i
+    ];
+    const lowestMensal = Math.min(...planos.map(p => p.mensal));
+    const rows = planos.map(p => {
+      const isBest = p.mensal === lowestMensal;
+      const hasInter = p.intercalada && p.qtd_intercaladas;
+      const interSub = hasInter
+        ? `<span class="lp-intercalada-sub">+ ${brl(p.intercalada)} · ${p.qtd_intercaladas}x intercaladas/ano</span>`
+        : '';
+      const bestBadge = isBest ? `<span class="lp-best-badge">menor parcela</span>` : '';
+      return `<tr class="${isBest ? 'lp-best' : ''}">
+        <td><span class="lp-plan-name">${p.label}${bestBadge}</span></td>
+        <td>${p.meses}x</td>
+        <td><span class="lp-mensal-val">${brl(p.mensal)}</span>${interSub}</td>
+      </tr>`;
+    }).join('');
+
+    return `
+      <div class="lp-handle"></div>
+      <button class="lp-close" id="lp-close-btn" aria-label="Fechar">×</button>
+      <div class="lp-header">
+        <div class="lp-header-row">
+          <div>
+            <span class="lp-badge">${data.quadra}</span>
+            <div class="lp-title">Lote ${data.lote}</div>
+            <div class="lp-subtitle">${data.m2.toFixed(1)} m² · R$ ${Math.round(data.vl_m2)}/m²</div>
+          </div>
+          <div class="lp-preco-block">
+            <div class="lp-preco-label">Valor total</div>
+            <div class="lp-preco">${brl(data.preco)}</div>
+          </div>
+        </div>
+        <div class="lp-entrada-row">
+          <div class="lp-entrada-icon">10%</div>
+          <span class="lp-entrada-text">Entrada mínima</span>
+          <span class="lp-entrada-val">${brl(data.entrada)}</span>
+        </div>
+      </div>
+      <div class="lp-body">
+        <div class="lp-section-label">Condições de pagamento</div>
+        <table class="lp-table">
+          <thead><tr><th>Plano</th><th>Prazo</th><th>Parcela mensal</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+      <div class="lp-footer">
+        <div class="lp-footer-dot"></div>
+        <span class="lp-footer-text">Valores sobre o saldo após entrada · Intercaladas reduzem a parcela mensal</span>
+      </div>`;
+  }
+
+  let currentKey = null;
+  const isMobile = () => window.innerWidth <= 768;
+
+  function showPopup(quadra, lote, anchorEl) {
+    const key = quadra + '_' + lote;
+    if (!LOTES_PLANOS[key]) return;
+
+    currentKey = key;
+    const data = LOTES_PLANOS[key];
+    document.getElementById('lp-card').innerHTML = buildPopupHtml(data);
+
+    // Wire close button
+    document.getElementById('lp-close-btn').addEventListener('click', e => {
+      e.stopPropagation();
+      hidePopup();
+    });
+
+    if (isMobile()) {
+      overlay.classList.add('open');
+      popup.style.cssText = '';
+    } else {
+      positionPopup(anchorEl);
+    }
+
+    // Force reflow then animate
+    popup.offsetHeight;
+    popup.classList.add('visible');
+  }
+
+  function positionPopup(anchor) {
+    const rect = anchor.getBoundingClientRect();
+    const popW = 430;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    let left = rect.left + rect.width / 2 - popW / 2;
+    if (left + popW > vw - 12) left = vw - popW - 12;
+    if (left < 12) left = 12;
+
+    // Estimate height (before render)
+    const estimatedH = 380;
+    let top = rect.bottom + 12;
+    let arrowOnTop = true;
+    if (top + estimatedH > vh - 16) {
+      top = rect.top - estimatedH - 12;
+      arrowOnTop = false;
+    }
+    if (top < 72) top = 72;
+
+    popup.style.cssText = `position:fixed;left:${left}px;top:${top}px;width:${popW}px;`;
+
+    // Arrow
+    const card = document.getElementById('lp-card');
+    let arrow = card.querySelector('.lp-arrow');
+    if (!arrow) {
+      arrow = document.createElement('div');
+      arrow.className = 'lp-arrow';
+      card.appendChild(arrow);
+    }
+    const arrowLeft = rect.left + rect.width/2 - left - 5;
+    const clampedLeft = Math.max(14, Math.min(arrowLeft, popW - 24));
+    if (arrowOnTop) {
+      arrow.style.cssText = `top:-5px;bottom:auto;left:${clampedLeft}px;`;
+    } else {
+      arrow.style.cssText = `bottom:-5px;top:auto;left:${clampedLeft}px;transform:rotate(45deg);`;
+    }
+  }
+
+  function hidePopup() {
+    popup.classList.remove('visible');
+    overlay.classList.remove('open');
+    currentKey = null;
+  }
+
+  // ── Event delegation on tbody for info buttons ──────────────────────────
+  document.getElementById('lotes-tbody').addEventListener('click', e => {
+    const btn = e.target.closest('.lote-info-btn');
+    if (!btn) return;
+    e.stopPropagation();
+    const quadra = btn.dataset.quadra;
+    const lote = btn.dataset.lote;
+    const key = quadra + '_' + lote;
+    if (currentKey === key && popup.classList.contains('visible')) {
+      hidePopup();
+    } else {
+      showPopup(quadra, lote, btn);
+    }
+  });
+
+  // ── Close triggers ──────────────────────────────────────────────────────
+  overlay.addEventListener('click', hidePopup);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') hidePopup();
+  });
+
+  // Close desktop popup on outside click
+  document.addEventListener('click', e => {
+    if (!isMobile() && popup.classList.contains('visible')
+        && !popup.contains(e.target)
+        && !e.target.classList.contains('lote-info-btn')) {
+      hidePopup();
+    }
+  });
+
+  // ── Prevent popup from closing when scrolling inside it (mobile) ────────
+  popup.addEventListener('touchmove', e => e.stopPropagation(), { passive: true });
+
+})();
+
 </script>
 </body>
 </html>
