@@ -22,7 +22,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--paper);color:v
 
 /* ── NAV ── */
 nav{background:var(--forest-d);position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.25)}
-.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;padding:0 1.5rem;height:52px;position:relative}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;padding:0 1.5rem;height:62px;position:relative}
 .nav-brand{display:flex;align-items:center;white-space:nowrap;flex-shrink:0}
 .nav-brand-text{font-size:14px;font-weight:700;color:#fff;letter-spacing:.02em}
 .nav-brand-sep{color:var(--gold-l);margin:0 7px;font-size:12px;opacity:.7}
@@ -50,7 +50,7 @@ nav{background:var(--forest-d);position:sticky;top:0;z-index:100;box-shadow:0 2p
 .hero-inner{max-width:1200px;margin:0 auto;position:relative}
 .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:300;line-height:1.2;margin-bottom:8px}
 .hero h1 strong{font-weight:700}
-.hero-sub{font-size:14px;color:rgba(255,255,255,.6);font-weight:300;margin-bottom:2rem;line-height:1.6;max-width:560px;transition:opacity .3s,max-height .35s}
+.hero-sub{font-size:clamp(1rem,2.2vw,1.5rem);color:rgba(255,255,255,.6);font-weight:300;margin-bottom:2rem;line-height:1.6;max-width:560px;transition:opacity .3s,max-height .35s}
 .hero-kpis{display:flex;gap:1.5rem;flex-wrap:wrap;transition:opacity .3s,max-height .35s}
 .hero-kpi{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:.9rem 1.2rem;backdrop-filter:blur(4px)}
 .hero-kpi .kv{font-size:1.6rem;font-weight:700;color:#fff;line-height:1}
@@ -217,6 +217,41 @@ table.main tbody tr:hover td{background:var(--forest-xl)}
   .hero-kpi{padding:.7rem .9rem}
   .hero-mini-kpis{gap:.7rem}
 }
+/* ── OUTLIER MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{background:#fff;border-radius:14px;max-width:520px;width:90%;padding:0;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);transform:translateY(16px) scale(.97);transition:transform .25s}
+.modal-overlay.open .modal-box{transform:none}
+.modal-header{background:var(--alert);color:#fff;padding:1rem 1.4rem;display:flex;align-items:center;gap:10px}
+.modal-header svg{flex-shrink:0}
+.modal-header-text{flex:1}
+.modal-header h3{font-size:.95rem;font-weight:700;line-height:1.2}
+.modal-header p{font-size:11px;opacity:.75;margin-top:2px}
+.modal-close{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.modal-close:hover{background:rgba(255,255,255,.35)}
+.modal-body{padding:1.4rem}
+.modal-body p{font-size:13px;color:#5a2020;line-height:1.6;margin-bottom:1rem}
+.modal-body .out-t{margin-top:.5rem}
+
+/* ── KPI OUTLIER BUTTON ── */
+.hero-mini-kpi.outlier-kpi{cursor:pointer;background:rgba(184,50,50,.2);border-color:rgba(184,50,50,.3);transition:background .15s,transform .15s}
+.hero-mini-kpi.outlier-kpi:hover{background:rgba(184,50,50,.32);transform:translateY(-1px)}
+.hero-mini-kpi.outlier-kpi .mkv{color:#ffaaaa}
+.hero-mini-kpi.outlier-kpi .mkl{color:rgba(255,180,180,.75)}
+.hero-kpi.outlier-kpi{cursor:pointer;background:rgba(184,50,50,.2);border-color:rgba(184,50,50,.3);transition:background .15s,transform .15s}
+.hero-kpi.outlier-kpi:hover{background:rgba(184,50,50,.32);transform:translateY(-1px)}
+.hero-kpi.outlier-kpi .kv{color:#ffaaaa}
+.hero-kpi.outlier-kpi .kl{color:rgba(255,180,180,.75)}
+
+/* ── PARALLAX SECTIONS ── */
+.parallax-divider{position:relative;height:160px;overflow:hidden;margin:2.5rem -1.5rem}
+.parallax-divider .pdiv-bg{position:absolute;inset:-60px 0;background-attachment:fixed;background-size:cover;background-position:center;will-change:transform}
+.pdiv-forest{background-image:linear-gradient(135deg,var(--forest-d) 0%,var(--forest) 50%,var(--forest-l) 100%)}
+.pdiv-gold{background-image:linear-gradient(135deg,var(--gold) 0%,var(--gold-l) 60%,var(--forest-l) 100%)}
+.parallax-divider .pdiv-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px}
+.parallax-divider .pdiv-label{font-size:1.1rem;font-weight:700;color:#fff;letter-spacing:.12em;text-transform:uppercase;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+.parallax-divider .pdiv-sub{font-size:11px;color:rgba(255,255,255,.6);letter-spacing:.08em}
+
 </style>
 </head>
 <body>
@@ -224,7 +259,8 @@ table.main tbody tr:hover td{background:var(--forest-xl)}
 <nav>
   <div class="nav-inner">
     <div class="nav-brand">
-      <span class="nav-brand-text">Quintas da Mata<span class="nav-brand-sep">·</span>Lançar 21</span>
+      <img src="lançar21.png" alt="" style="height:90px;width:auto;display:block;margin-top:15px;">
+      
     </div>
     <div class="nav-links" id="nav-links-desktop">
       <a href="#" class="active" onclick="showPage('visao-geral',this);closeMobile()">Visão Geral</a>
@@ -248,14 +284,17 @@ table.main tbody tr:hover td{background:var(--forest-xl)}
 <!-- HERO dinâmico – conteúdo atualizado por showPage() -->
 <div class="hero" id="hero-block">
   <div class="hero-inner">
-    <h1 id="hero-title"><strong>Quintas da Mata</strong><br>Inteligência de Mercado</h1>
-    <p class="hero-sub" id="hero-sub">Análise completa do estoque disponível · 123 lotes em 11 quadras · Dados atualizados</p>
-    <!-- KPIs completos – só visão geral -->
-    <div class="hero-kpis" id="hero-kpis-full">
+    <h1 id="hero-title"><strong>Quintas da Mata</strong></h1>
+    <!-- Subtítulo – visível só no hero expandido (visão geral) -->
+    <div class="hero-sub" id="hero-sub">Análise de volume e VGV · Visão Geral </div>
+    <!-- KPIs grandes – visão geral -->
+    <div class="hero-kpis" id="hero-kpis">
       <div class="hero-kpi"><div class="kv">123</div><div class="kl">Lotes disponíveis</div></div>
       <div class="hero-kpi"><div class="kv">11</div><div class="kl">Quadras ativas</div></div>
       <div class="hero-kpi"><div class="kv">R$ 8,38 M</div><div class="kl">GVV Total</div></div>
-      <div class="hero-kpi"><div class="kv">1 ⚑</div><div class="kl">Ponto fora da curva</div></div>
+      <div class="hero-kpi outlier-kpi" onclick="openOutlierModal()" title="Ver detalhes do ponto fora da curva" style="cursor:pointer">
+        <div class="kv">1 ⚑</div><div class="kl">Ponto fora da curva</div>
+      </div>
     </div>
     <!-- Mini KPIs – outras páginas -->
     <div class="hero-mini-kpis" id="hero-mini-kpis"></div>
@@ -267,20 +306,6 @@ table.main tbody tr:hover td{background:var(--forest-xl)}
 <!-- ═══════════════════ VISÃO GERAL ═══════════════════ -->
 <div id="pg-visao-geral" class="page-section active">
   <div style="margin-top:1.5rem">
-  <div class="alert-box">
-    <div class="alert-title">
-      <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M10 2.5L18 17H2L10 2.5Z" stroke="#b83232" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8.5V12" stroke="#b83232" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="14.5" r=".8" fill="#b83232"/></svg>
-      Ponto fora da curva identificado — excluído da análise principal
-    </div>
-    <p>O <strong>Lote 2 da QD-17</strong> possui área de <strong>153,2 m²</strong> — inferior ao mínimo de 160 m² adotado como critério. Seu valor final de <strong style="color:var(--alert)">R$ 49.024</strong> é o único abaixo do piso de R$ 51.200. Este lote foi excluído de todas as médias e agrupamentos.</p>
-    <table class="out-t">
-      <thead><tr><th>Quadra</th><th>Lote</th><th>Área (m²)</th><th>R$/m²</th><th>Valor final</th><th>Motivo</th></tr></thead>
-      <tbody>
-        <tr><td><strong>QD-17</strong></td><td>2</td><td>153,2</td><td>R$ 320,00</td><td style="color:var(--alert);font-weight:700">R$ 49.024</td><td>Área &lt;160 m² + abaixo do piso</td></tr>
-      </tbody>
-    </table>
-  </div>
-  </div>
 
   <div class="gvv-card">
     <div class="gvv-main">
@@ -320,7 +345,18 @@ table.main tbody tr:hover td{background:var(--forest-xl)}
     </div>
   </div>
 
-  <div class="section">
+  </div>
+
+  <!-- parallax -->
+  <div class="parallax-divider">
+    <div class="pdiv-bg pdiv-forest"></div>
+    <div class="pdiv-overlay">
+      <span class="pdiv-label">Distribuição de Valores</span>
+      <span class="pdiv-sub">123 lotes · 11 quadras ativas</span>
+    </div>
+  </div>
+
+  <div class="section" style="margin-top:2rem">
     <div class="section-head">
       <div class="sh-dot"></div>
       <h2>Distribuição por faixa de valor</h2>
@@ -329,7 +365,7 @@ table.main tbody tr:hover td{background:var(--forest-xl)}
     <div class="faixa-list" id="faixa-list"></div>
   </div>
 
-  <div class="section">
+  <div class="section" style="margin-top:2rem">
     <div class="section-head"><div class="sh-dot"></div><h2>Visualização</h2></div>
     <div class="chart-row">
       <div class="chart-card">
@@ -426,6 +462,29 @@ table.main tbody tr:hover td{background:var(--forest-xl)}
 </div>
 
 </div><!-- /page -->
+
+<!-- OUTLIER MODAL -->
+<div class="modal-overlay" id="outlier-modal" onclick="closeOutlierModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2.5L18 17H2L10 2.5Z" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8.5V12" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="14.5" r=".8" fill="#fff"/></svg>
+      <div class="modal-header-text">
+        <h3>Ponto fora da curva identificado</h3>
+        <p>Excluído da análise principal</p>
+      </div>
+      <button class="modal-close" onclick="closeOutlierModal()" aria-label="Fechar">×</button>
+    </div>
+    <div class="modal-body">
+      <p>O <strong>Lote 2 da QD-17</strong> possui área de <strong>153,2 m²</strong> — inferior ao mínimo de 160 m² adotado como critério. Seu valor final de <strong style="color:var(--alert)">R$ 49.024</strong> é o único abaixo do piso de R$ 51.200. Este lote foi excluído de todas as médias e agrupamentos.</p>
+      <table class="out-t">
+        <thead><tr><th>Quadra</th><th>Lote</th><th>Área (m²)</th><th>R$/m²</th><th>Valor final</th><th>Motivo</th></tr></thead>
+        <tbody>
+          <tr><td><strong>QD-17</strong></td><td>2</td><td>153,2</td><td>R$ 320,00</td><td style="color:var(--alert);font-weight:700">R$ 49.024</td><td>Área &lt;160 m² + abaixo do piso</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
 <footer class="site-footer">
   <strong>Lançar 21</strong> · Inteligência de Mercado · Dashboard Quintas da Mata · Uso exclusivo interno
@@ -627,7 +686,7 @@ renderLotes();
 // ── HERO CONFIGS POR PÁGINA ──
 const heroConfig = {
   'visao-geral': {
-    title: '<strong>Quintas da Mata</strong><br>Inteligência de Mercado',
+    title: '<strong>Quintas da Mata</strong>',
     compact: false,
     mini: []
   },
@@ -683,30 +742,66 @@ function updateHero(id){
   const hero = document.getElementById('hero-block');
   const title = document.getElementById('hero-title');
   const miniKpis = document.getElementById('hero-mini-kpis');
+  const heroSub = document.getElementById('hero-sub');
+  const heroKpis = document.getElementById('hero-kpis');
 
   title.innerHTML = cfg.title;
 
-  if(cfg.compact){
+  if(id === 'visao-geral'){
+    // Full hero — igual à entrada
+    hero.classList.remove('compact');
+    if(heroSub) heroSub.style.display = '';
+    if(heroKpis) heroKpis.style.display = '';
+    miniKpis.innerHTML = '';
+    miniKpis.style.display = 'none';
+  } else {
+    // Compact hero — outras páginas
     hero.classList.add('compact');
-    miniKpis.innerHTML = cfg.mini.map(k=>`
-      <div class="hero-mini-kpi">
+    if(heroSub) heroSub.style.display = 'none';
+    if(heroKpis) heroKpis.style.display = 'none';
+    miniKpis.style.display = '';
+    // Mini KPIs da página + sempre adiciona o outlier no final
+    const miniList = [...(cfg.mini || [])];
+    // Adiciona outlier se não estiver já na lista
+    if(!miniList.some(k=>k.outlier)){
+      miniList.push({v:'1 ⚑', l:'Ponto fora da curva', outlier: true});
+    }
+    miniKpis.innerHTML = miniList.map(k=>`
+      <div class="hero-mini-kpi${k.outlier?' outlier-kpi':''}" ${k.outlier?'onclick="openOutlierModal()" title="Ver detalhes do ponto fora da curva"':''}>
         <div class="mkv">${k.v}</div>
         <div class="mkl">${k.l}</div>
       </div>`).join('');
-  } else {
-    hero.classList.remove('compact','scrolled');
-    miniKpis.innerHTML = '';
   }
 }
 
-// ── SCROLL SHRINK (só visão geral) ──
-window.addEventListener('scroll', ()=>{
-  const hero = document.getElementById('hero-block');
-  if(!hero.classList.contains('compact')){
-    if(window.scrollY > 80) hero.classList.add('scrolled');
-    else hero.classList.remove('scrolled');
+// ── OUTLIER MODAL ──
+function openOutlierModal(){
+  document.getElementById('outlier-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeOutlierModal(e){
+  document.getElementById('outlier-modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeOutlierModal(); });
+
+// ── PARALLAX SCROLLING ──
+(function(){
+  function updateParallax(){
+    document.querySelectorAll('.parallax-divider .pdiv-bg').forEach(bg=>{
+      const rect = bg.closest('.parallax-divider').getBoundingClientRect();
+      const cy = rect.top + rect.height/2;
+      const vh = window.innerHeight;
+      // progress: -0.5 (above) to 0.5 (below) center of viewport
+      const progress = (cy - vh/2) / vh;
+      const offset = progress * 80; // px shift
+      bg.style.transform = `translateY(${offset}px)`;
+    });
   }
-});
+  window.addEventListener('scroll', updateParallax, {passive:true});
+  window.addEventListener('resize', updateParallax);
+  updateParallax();
+})();
 
 // ── HAMBURGER MOBILE ──
 function toggleMobile(){
