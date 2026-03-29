@@ -1000,7 +1000,7 @@ allLotes.forEach(l => { l.delta_pct = LOTES_DELTA_PCT[l.quadra+'_'+l.lote] || 0;
 function renderLotes(){
   let data = [...allLotes];
   if(currentQd!=='ALL') data=data.filter(l=>l.quadra===currentQd);
-  if(currentSearch) data=data.filter(l=>l.quadra.toLowerCase().includes(currentSearch)||String(l.lote).includes(currentSearch));
+  if(currentSearch) data=data.filter(l=>String(l.lote).includes(currentSearch));
   data.sort((a,b)=>{
     let va=a[sortKey],vb=b[sortKey];
     if(typeof va==='string') return sortAsc?va.localeCompare(vb):vb.localeCompare(va);
